@@ -1,0 +1,6 @@
+.brand { display: inline-flex; align-items: center; gap: 11px; color: var(--text); text-decoration: none; border-radius: 5px; }
+.mark { width: 35px; height: 35px; color: var(--accent); flex: 0 0 auto; }
+.wordmark { font-family: var(--font-ui); font-size: 29px; font-weight: 650; letter-spacing: -1.4px; }
+.wordmark > span:first-child { font-weight: 400; }
+.period { color: var(--accent); }
+@media (max-width: 480px) { .wordmark { font-size: 26px; } .mark { width: 30px; height: 30px; } }

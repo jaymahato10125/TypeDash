@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.vite/
+.sites-runtime/
+*.tsbuildinfo
+playwright-report/
+test-results/
+.DS_Store
+.env
+.env.*
+!.env.example
+.vercel/
