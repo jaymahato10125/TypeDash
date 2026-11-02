@@ -1,0 +1,28 @@
+// Independently assembled common English words. No upstream dataset is copied.
+// Alternating disjoint index pools prevents immediate repeats for any seed.
+export const ENGLISH_WORDS = [
+  'about', 'after', 'again', 'air', 'all', 'also', 'always', 'and', 'another', 'any',
+  'around', 'as', 'ask', 'at', 'away', 'back', 'be', 'because', 'been', 'before',
+  'begin', 'best', 'better', 'between', 'big', 'both', 'bring', 'build', 'but', 'by',
+  'call', 'can', 'care', 'carry', 'change', 'child', 'city', 'clear', 'close', 'come',
+  'could', 'day', 'different', 'do', 'down', 'each', 'early', 'earth', 'easy', 'end',
+  'even', 'ever', 'every', 'eye', 'face', 'fact', 'fall', 'far', 'feel', 'few',
+  'find', 'first', 'follow', 'for', 'form', 'found', 'free', 'friend', 'from', 'full',
+  'get', 'give', 'go', 'good', 'great', 'grow', 'had', 'hand', 'hard', 'has',
+  'have', 'hear', 'help', 'here', 'high', 'hold', 'home', 'how', 'idea', 'if',
+  'in', 'into', 'is', 'it', 'just', 'keep', 'kind', 'know', 'land', 'large',
+  'last', 'late', 'learn', 'leave', 'left', 'let', 'life', 'light', 'like', 'line',
+  'little', 'live', 'long', 'look', 'love', 'low', 'made', 'make', 'many', 'may',
+  'mean', 'might', 'mind', 'more', 'most', 'move', 'much', 'must', 'my', 'name',
+  'near', 'need', 'never', 'new', 'next', 'night', 'no', 'not', 'now', 'number',
+  'of', 'off', 'often', 'old', 'on', 'once', 'one', 'only', 'open', 'or',
+  'other', 'our', 'out', 'over', 'own', 'part', 'people', 'place', 'plan', 'play',
+  'point', 'put', 'quiet', 'read', 'real', 'right', 'room', 'run', 'same', 'say',
+  'see', 'seem', 'set', 'she', 'show', 'side', 'since', 'small', 'so', 'some',
+  'soon', 'sound', 'space', 'stand', 'start', 'still', 'such', 'take', 'tell', 'than',
+  'that', 'the', 'their', 'them', 'then', 'there', 'these', 'they', 'thing', 'think',
+  'this', 'those', 'through', 'time', 'to', 'together', 'too', 'try', 'turn', 'two',
+  'under', 'until', 'up', 'us', 'use', 'very', 'walk', 'want', 'was', 'water',
+  'way', 'we', 'well', 'went', 'were', 'what', 'when', 'where', 'which', 'while',
+  'who', 'why', 'will', 'with', 'word', 'work', 'world', 'would', 'year', 'you',
+] as const

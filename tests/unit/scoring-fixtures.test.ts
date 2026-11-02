@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { scoringFixtures } from '../fixtures/scoring'
 
-// These checks validate the written scoring contract, not a typing engine.
-// Phase 2 will replay the same traces against the engine implementation.
+// Keep the contract arithmetic independent of the engine replay tests.
 describe('hand-calculated scoring contract', () => {
   it.each(scoringFixtures)('$id: expected metrics agree with the documented counts', fixture => {
     const minutes = fixture.expected.elapsedMs / 60_000

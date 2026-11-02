@@ -30,6 +30,7 @@ export type TypedWord = Readonly<{
   target: string
   input: string
   submitted: boolean
+  separator: boolean
 }>
 
 export type CharacterCounts = Readonly<{
@@ -42,6 +43,12 @@ export type CharacterCounts = Readonly<{
 export type AttemptCounts = Readonly<{
   correct: number
   total: number
+}>
+
+export type ScoringTotals = Readonly<{
+  creditedUnits: number
+  retainedUnits: number
+  characters: CharacterCounts
 }>
 
 export type TimelineSample = Readonly<{
@@ -58,6 +65,7 @@ export type TestState = Readonly<{
   words: readonly TypedWord[]
   activeWordIndex: number
   attempts: AttemptCounts
+  completedTotals: ScoringTotals
   startedAtMs: number | null
   finishedAtMs: number | null
   elapsedMs: number

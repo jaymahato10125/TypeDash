@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { Brand } from '../components/Brand'
 import { Icon } from '../components/Icon'
-import { PracticePreview } from '../features/typing/components/PracticePreview'
+import { TypingTest } from '../features/typing/components/TypingTest'
 import styles from './App.module.css'
 
 export function App() {
@@ -27,7 +27,7 @@ export function App() {
           <h1>Find your rhythm<span>.</span></h1>
           <p className={styles.tagline}>Just you, the keys, and a little progress.</p>
         </div>
-        <PracticePreview />
+        <TypingTest />
       </main>
 
       <div className={styles.bottom}>
@@ -49,8 +49,8 @@ export function App() {
         <h2 id="about-title">A little focus.<br />A little faster.</h2>
         <p id="about-description">TypeDash is a space to find your typing rhythm and build speed at your own pace.</p>
         <p>No accounts, no distractions. Your practice belongs to you.</p>
-        <p className={styles.dialogNote}>You’re viewing a preview. Interactive typing is coming soon.</p>
-        <form method="dialog"><button className={styles.dialogAction}>Back to preview <Icon name="arrow" width="17" height="17" /></button></form>
+        <p className={styles.dialogNote}>Type the words you see. Your first key starts a 30-second test. Use backspace to correct a mistake and space to move on.</p>
+        <form method="dialog"><button className={styles.dialogAction}>Back to practice <Icon name="arrow" width="17" height="17" /></button></form>
       </dialog>
     </div>
   )

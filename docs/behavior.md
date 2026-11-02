@@ -1,6 +1,6 @@
 **TypeDash behavior contract — scoring version 1**
 
-Phase 1 defines the contract. Phase 2 implements it. Follow the phase approval workflow in `PLAN.md`.
+Phase 1 defined the contract. Phase 2 implements it in the framework-independent engine. Follow the phase approval workflow in `PLAN.md`.
 
 **Reference observations**
 
@@ -9,7 +9,7 @@ Reference: [Monkeytype](https://monkeytype.com/) and its [statistics documentati
 | Trace | Observed reference behavior | TypeDash decision |
 | --- | --- | --- |
 | Early Space | With target `hand`, typing `h` and Space marks `hand` as an erroneous submitted word and advances to the next word. The typed `h` remains marked correct. | Allow nonempty early submission, mark untyped target characters missed, and count the premature separator as an incorrect attempt. |
-| Backtracking | With target `down`, after submitting `d`, then inserting and deleting a wrong character in the next word, another Backspace can return to `down` and erase its retained character. | Crossing into a previous incorrect word deletes its final retained character; exact previously submitted words remain locked. Specify empty-word and word-deletion cases in Phase 2 fixtures. |
+| Backtracking | With target `down`, after submitting `d`, then inserting and deleting a wrong character in the next word, another Backspace can return to `down` and erase its retained character. | Crossing into a previous incorrect word deletes its final retained character; exact previously submitted words remain locked. Empty-word and word-deletion cases are covered by the engine tests. |
 | Final word | A 10-word test completed after typing the exact generated text ending in `system`, without a trailing Space. Result visibility updated after the transition. | Finish word mode immediately when the final word exactly matches; otherwise allow nonempty final submission with Space. |
 | Partial-word timeout | With target `change`, typing `ch` and then stopping for the 15-second test led to results without further input: 100% accuracy, `2/0/0/0` characters, and displayed WPM/raw rounded to 2. | Finalize on an idle deadline. Credit the correct active prefix, do not count the unfinished suffix as missed, and keep duration independent of UI refresh timing. |
 
@@ -23,7 +23,7 @@ Timeout behavior and detailed scoring should follow the explicit TypeDash rules 
 - `INSERT` may contain several characters from one committed composition event. Process them in order, preserving the same event timestamp. Raw composing keystrokes are not insertions. English content is the initial scope.
 - Reject test-input paste and drop. Keep browser shortcuts and normal Tab navigation available.
 - Space submits a nonempty active word. It is a correct attempt only when the input exactly matches the target; otherwise it is an incorrect attempt. Count the retained separator in raw speed and positional character totals, with the same correct/incorrect classification.
-- Backspace edits the active buffer. From an empty active word, it can cross to a prior incorrect word, remove its submitted separator, and delete its last retained character. It does not erase prior input-attempt history. It cannot cross a correctly submitted word. Extra deletion behavior and word deletion must be frozen in additional Phase 2 traces before engine completion.
+- Backspace edits the active buffer. From an empty active word, it can cross to a prior incorrect word, remove its submitted separator, and delete its last retained character. It does not erase prior input-attempt history. It cannot cross a correctly submitted word. Ctrl/Option/Command + Backspace clears the active word; when that word is empty it crosses into one prior incorrect word and clears that buffer. Deleting an extra character removes its raw and positional units while retaining its original failed attempt.
 - A time test continues after any correctly typed word. A word test completes on the exact last character of a correct final word, or when a nonempty final word is submitted with Space. A terminal Space is an insertion attempt but is not retained as a trailing separator, so it cannot inflate final raw or WPM units.
 - Focus loss and dialogs do not pause time. Restart discards the active run and returns to `ready`; same-text retry reuses the seed. Abandoned runs are not completed results.
 
@@ -35,8 +35,14 @@ Raw WPM is `retainedUnits / 5 / minutes`: retained letters and submitted nonterm
 
 Character counts are positional: correct, incorrect, extra, and missed. Count retained separators according to the submission rule. Missed characters are the untyped suffixes of submitted words, never the untouched future prompt or the unsubmitted suffix at timeout. Thus character counts and attempt accuracy describe different things.
 
-Before positive elapsed time, display no speed. Use zero for empty-attempt accuracy internally and display an unset value until insertion. Do not save empty or zero-duration results. Preserve full precision internally and round only displayed metrics. Initial fixtures in `tests/fixtures/scoring.ts` supply independent hand calculations; tests currently validate those fixtures' arithmetic. Phase 2 must replay them against the actual reducer.
+Before positive elapsed time, display no speed. Use zero for empty-attempt accuracy internally and display an unset value until insertion. Do not save empty or zero-duration results. Preserve full precision internally and round only displayed metrics. Initial fixtures in `tests/fixtures/scoring.ts` supply independent hand calculations; tests validate their arithmetic and replay the traces against the actual reducer. No results are persisted before the local-progress phase.
 
-**Required Phase 2 edge traces**
+The interface currently exposes only the approved 30-second English configuration. The engine also verifies final-word completion using internal fixtures, ahead of exposing word-mode controls in phase 3. The generator can extend a timed prompt at the end of its initial buffer so even a very fast run can finish its full duration.
+
+English words in `src/data/english.ts` are independently assembled for TypeDash. A stable indexed hash maps a seed and word offset to a word. Alternating disjoint pools prevent adjacent repeats, and independently generated batches preserve the same prefix. This is a reproducible practice generator, not a cryptographic or competitive challenge source.
+
+The rendered prompt mounts at most 64 words near the active position. Previously completed word totals are cached; metrics only combine those totals with the active word, so individual keypresses do not rescan the complete run. Input handles Unicode code points, with English-only targets; full grapheme and multilingual behavior remains outside the first-release language scope.
+
+**Covered Phase 2 edge traces**
 
 First-key start; ignored leading Space; multiple inserts from composition; early submission; repeated Space; wrong and extra letters; correction preserving attempt errors; backtracking to an incorrect word; blocked crossing of correct words; word deletion; exact-deadline input; delayed UI tick; idle timeout; correct and incorrect unfinished prefixes; final-word completion; post-finish input; restart cleanup; and deterministic same-seed generation.

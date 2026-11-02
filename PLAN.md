@@ -1,8 +1,8 @@
 **TypeDash implementation plan**
 
-Status: phase 1 complete; awaiting approval to start phase 2. Prepared November 2, 2026; phase 1 completed November 3, 2026.
+Status: phases 1 and 2 complete; awaiting approval to start phase 3. Prepared November 2, 2026; phases 1 and 2 completed November 3, 2026.
 
-Build TypeDash, a standalone application that reproduces Monkeytype's core typing experience: a quiet interface, immediate character feedback, accurate timing, smooth caret movement, and useful results. The completed application will store preferences and history locally in the browser and be ready to use immediately. Phase 1 has added the foundation and preview UI; its deliverables and validation are recorded in [docs/phase-1.md](./docs/phase-1.md).
+Build TypeDash, a standalone application that reproduces Monkeytype's core typing experience: a quiet interface, immediate character feedback, accurate timing, smooth caret movement, and useful results. The completed application will store preferences and history locally in the browser and be ready to use immediately. The foundation and working 30-second typing test are complete; deliverables and validation are recorded in [docs/phase-1.md](./docs/phase-1.md) and [docs/phase-2.md](./docs/phase-2.md).
 
 Use `TypeDash` as the display name and `typedash` as the package name and project identifier.
 
@@ -125,7 +125,7 @@ The user requires approval before starting every phase. Planning updates do not 
 | Phase | Deliverables | Completion gate | Status |
 | --- | --- | --- | --- |
 | 1. Foundation and UI shell | Scaffold React/TypeScript/Vite, npm scripts, linting and test tooling. Add TypeDash branding, theme tokens, a locally bundled monospace font, and a responsive test-screen shell. Define engine types, reference behavior traces, scoring fixtures, and an initial bundle-size baseline. | Development server and production build work; lint and type checks pass; the shell is reviewable at narrow and wide widths; behavior decisions and performance budgets are documented. Typing functionality belongs to phase 2. | Complete; see docs/phase-1.md |
-| 2. Core typing experience | Implement deterministic English text generation, character feedback, word submission, backspace, absolute timing, a basic result summary, and restart for a 30-second test. Connect the engine to the input and prompt. | A user can start, complete, inspect accurate scores, and repeat a test; hand-calculated scoring and deadline fixtures pass; one browser flow verifies the complete interaction. | Not started; requires approval |
+| 2. Core typing experience | Implement deterministic English text generation, character feedback, word submission, backspace, absolute timing, a basic result summary, and restart for a 30-second test. Connect the engine to the input and prompt. | A user can start, complete, inspect accurate scores, and repeat a test; hand-calculated scoring and deadline fixtures pass; one browser flow verifies the complete interaction. | Complete; see docs/phase-2.md |
 | 3. Test modes and controls | Add 15/30/60/120-second tests, 10/25/50/100-word tests, punctuation, numbers, timed prompt extension, same-text retry, focus handling, and restart cleanup. | Every preset completes correctly; configuration changes reset safely; long tests do not exhaust the prompt; focus recovery and repeated restarts work. | Not started; requires approval |
 | 4. Results and local progress | Add timeline sampling, the SVG speed chart, character breakdown, settings persistence, the latest-100 result history, and personal bests per compatible configuration. | Results save once and survive reload; bests compare compatible tests; malformed or blocked storage recovers gracefully; persistence stays outside input handling. | Not started; requires approval |
 | 5. Themes and interaction polish | Finish light/dark themes, font-size and live-stat controls, caret and line scrolling, settings/history views, keyboard navigation, reduced motion, and narrow layouts. | Ready, typing, blurred, results, settings, and history states pass visual and keyboard review; first-release preference controls work; no login or account UI is present. | Not started; requires approval |
@@ -152,4 +152,4 @@ Implement phases sequentially, with a functioning end-to-end test in phase 2 bef
 2. Add advanced preferences, command palette, sounds, and consistency after defining their behavior and accessibility requirements.
 3. Add local history filters and progress analysis while preserving the browser-only storage model.
 
-The user approved phase 1 with "start implementing". Phase 1 is complete. Ask for explicit approval before starting phase 2; no later phase is authorized yet.
+The user approved phase 2 with "implement next phase" after the phase 1 handoff. Phase 2 is complete. Ask for explicit approval before starting phase 3; no later phase is authorized yet.
