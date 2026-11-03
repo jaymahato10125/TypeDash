@@ -3,6 +3,8 @@
 .skipLink:focus { transform: none; }
 .header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 37px 0 0; }
 .headerLeft { display: flex; align-items: center; gap: 24px; }
+.headerActions { display: flex; align-items: center; gap: 10px; }
+.storageNotice { padding: 12px 15px; margin: 20px 0 0; border: 1px solid var(--border-strong); border-radius: 7px; color: var(--accent); font-family: var(--font-ui); font-size: 12px; line-height: 1.6; }
 .headerDivider { height: 23px; width: 1px; background: var(--border-strong); }
 .currentView { color: var(--accent); font-size: 12px; display: inline-flex; align-items: center; gap: 9px; }
 .aboutButton { display: inline-flex; align-items: center; gap: 8px; background: none; border: none; color: var(--subtle-text); padding: 10px; border-radius: 6px; font: inherit; font-size: 12px; cursor: pointer; }
@@ -32,6 +34,10 @@
 .dialog .dialogNote { font-size: 12px; padding: 13px; background: var(--background); border-radius: 6px; margin: 22px 0; }
 .dialogAction { display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--accent); border: none; padding: 12px 17px; border-radius: 6px; color: var(--background); cursor: pointer; font-family: var(--font-mono); font-size: 12px; width: 100%; }
 .dialogAction:hover { background: var(--accent-hover); }
+.historyDialog { max-width: 900px; max-height: 85svh; }
+.historyDialog h2 { font-size: 25px; margin: 0; }
+.historyDialog h2 span { color: var(--accent); }
+.historyDialog .dialogHeader { margin-bottom: 22px; }
 @media (min-height: 850px) and (min-width: 701px) { .main { padding-bottom: 100px; } }
 @media (max-width: 700px) {
   .page { width: calc(100% - 48px); }
@@ -47,6 +53,10 @@
   .header { padding-top: 20px; }
   .headerDivider, .currentView { display: none; }
   .aboutButton { font-size: 11px; }
+  .headerActions { gap: 2px; }
+  .headerActions .aboutButton { padding: 8px 5px; gap: 5px; }
+  .historyDialog { padding: 20px; width: calc(100% - 24px); }
+  .historyDialog h2 { font-size: 22px; }
   .main { padding: 53px 0 40px; }
   .intro h1 { letter-spacing: -1px; }
   .eyebrow { font-size: 8px; letter-spacing: 1.6px; }

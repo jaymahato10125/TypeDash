@@ -61,7 +61,15 @@ export type TimelineSample = Readonly<{
   errors: number
 }>
 
+export type TimelinePoint = TimelineSample & Readonly<{
+  creditedUnits: number
+  retainedUnits: number
+  failedAttempts: number
+}>
+
 export type TestState = Readonly<{
+  runId: string
+  retry: boolean
   status: TestStatus
   config: TestConfig
   seed: number
@@ -72,7 +80,8 @@ export type TestState = Readonly<{
   startedAtMs: number | null
   finishedAtMs: number | null
   elapsedMs: number
-  timeline: readonly TimelineSample[]
+  timeline: readonly TimelinePoint[]
+  sampleIntervalMs: number
 }>
 
 export type TestAction =
@@ -81,7 +90,7 @@ export type TestAction =
   | Readonly<{ type: 'DELETE_WORD_BACKWARD'; nowMs: number }>
   | Readonly<{ type: 'SUBMIT_WORD'; nowMs: number }>
   | Readonly<{ type: 'TICK'; nowMs: number }>
-  | Readonly<{ type: 'RESTART'; config: TestConfig; seed: number }>
+  | Readonly<{ type: 'RESTART'; config: TestConfig; seed: number; runId?: string; retry?: boolean }>
 
 export type TestMetrics = Readonly<{
   elapsedMs: number

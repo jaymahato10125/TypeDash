@@ -1,22 +1,24 @@
 import { generateWords } from './generator'
 import { combineTotals, emptyTotals, wordTotals } from './metrics'
 import { DEFAULT_CONFIG } from './types'
+import { initialTimeline, sampleTimeline } from './timeline'
 import type { TestAction, TestConfig, TestState, TypedWord } from './types'
 
 function pendingWord(target: string): TypedWord {
   return { target, input: '', submitted: false, separator: false }
 }
 
-export function createTest(config: TestConfig = DEFAULT_CONFIG, seed = 1, targets?: readonly string[]): TestState {
+export function createTest(config: TestConfig = DEFAULT_CONFIG, seed = 1, targets?: readonly string[], run: { id: string; retry: boolean } = { id: 'test', retry: false }): TestState {
   const words = targets ?? generateWords(seed, config.mode === 'words' ? config.wordCount : 128, 0, config)
   if (words.length === 0 || words.some(word => word.length === 0 || /\s/.test(word))) {
     throw new RangeError('A test needs nonempty words without internal whitespace.')
   }
   return {
+    runId: run.id, retry: run.retry,
     status: 'ready', config: { ...config }, seed: seed >>> 0,
     words: words.map(pendingWord), activeWordIndex: 0,
     attempts: { correct: 0, total: 0 }, completedTotals: emptyTotals(),
-    startedAtMs: null, finishedAtMs: null, elapsedMs: 0, timeline: [],
+    startedAtMs: null, finishedAtMs: null, elapsedMs: 0, timeline: initialTimeline(), sampleIntervalMs: 1000,
   }
 }
 
@@ -91,21 +93,23 @@ function deleteBackward(state: TestState, wholeWord: boolean): TestState {
 }
 
 export function testReducer(state: TestState, action: TestAction): TestState {
-  if (action.type === 'RESTART') return createTest(action.config, action.seed)
+  if (action.type === 'RESTART') return createTest(action.config, action.seed, undefined, { id: action.runId ?? 'test', retry: action.retry ?? false })
   if (state.status === 'finished' || !Number.isFinite(action.nowMs)) return state
   let next = advanceClock(state, action.nowMs)
-  if (next.status === 'finished') return next
+  if (next.status === 'finished') return sampleTimeline(next, true, true)
+  next = sampleTimeline(next, false)
 
   switch (action.type) {
-    case 'TICK': return next
+    case 'TICK': break
     case 'INSERT':
       for (const character of action.text) {
         next = insertCharacter(next, character, action.nowMs)
         if (next.status === 'finished') break
       }
-      return next
-    case 'SUBMIT_WORD': return next.status === 'running' ? submitWord(next, action.nowMs) : next
-    case 'DELETE_BACKWARD': return next.status === 'running' ? deleteBackward(next, false) : next
-    case 'DELETE_WORD_BACKWARD': return next.status === 'running' ? deleteBackward(next, true) : next
+      break
+    case 'SUBMIT_WORD': if (next.status === 'running') next = submitWord(next, action.nowMs); break
+    case 'DELETE_BACKWARD': if (next.status === 'running') next = deleteBackward(next, false); break
+    case 'DELETE_WORD_BACKWARD': if (next.status === 'running') next = deleteBackward(next, true); break
   }
+  return sampleTimeline(next, true, next.status === 'finished')
 }

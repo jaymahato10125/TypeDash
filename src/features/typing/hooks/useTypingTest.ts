@@ -2,35 +2,41 @@ import { useEffect, useReducer, useRef } from 'react'
 import { startClock } from '../engine/clock'
 import { configurationKey, selectTime, selectWords } from '../engine/config'
 import { createTest, testReducer } from '../engine/reducer'
-import { DEFAULT_CONFIG } from '../engine/types'
 import type { TestConfig, TimePreset, WordPreset } from '../engine/types'
+import { useProgressStore } from '../../../lib/storage/ProgressContext'
 
 function newSeed() {
   return crypto.getRandomValues(new Uint32Array(1))[0]!
 }
 
 export function useTypingTest() {
-  const [state, dispatch] = useReducer(testReducer, undefined, () => createTest(DEFAULT_CONFIG, newSeed()))
-  const lengths = useRef<{ time: TimePreset; words: WordPreset }>({ time: 30, words: 25 })
+  const store = useProgressStore()
+  const preferences = store.getSnapshot().preferences
+  const [state, dispatch] = useReducer(testReducer, undefined, () => createTest(store.getSnapshot().preferences.config, newSeed(), undefined, { id: crypto.randomUUID(), retry: false }))
+  const lengths = useRef<{ time: TimePreset; words: WordPreset }>({ time: preferences.time, words: preferences.words })
   const durationMs = state.config.mode === 'time' ? state.config.durationSeconds * 1000 : null
 
   useEffect(() => {
     if (state.status !== 'running' || state.startedAtMs === null) return
     const tick = () => dispatch({ type: 'TICK', nowMs: performance.now() })
-    const stop = durationMs === null ? undefined : startClock(nowMs => dispatch({ type: 'TICK', nowMs }), state.startedAtMs + durationMs)
+    const stop = startClock(nowMs => dispatch({ type: 'TICK', nowMs }), durationMs === null ? null : state.startedAtMs + durationMs)
     document.addEventListener('visibilitychange', tick)
     window.addEventListener('focus', tick)
     return () => {
-      stop?.()
+      stop()
       document.removeEventListener('visibilitychange', tick)
       window.removeEventListener('focus', tick)
     }
   }, [state.status, state.startedAtMs, durationMs])
 
+  useEffect(() => {
+    store.savePreferences({ config: state.config, time: lengths.current.time, words: lengths.current.words })
+  }, [state.config, store])
+
   function restart(sameText = false, config = state.config) {
     const candidate = sameText ? state.seed : newSeed()
     const seed = !sameText && candidate === state.seed ? (candidate + 1) >>> 0 : candidate
-    dispatch({ type: 'RESTART', config, seed })
+    dispatch({ type: 'RESTART', config, seed, runId: crypto.randomUUID(), retry: sameText })
   }
 
   function configure(config: TestConfig) {
