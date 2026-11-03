@@ -49,7 +49,7 @@ export function App() {
         <h2 id="about-title">A little focus.<br />A little faster.</h2>
         <p id="about-description">TypeDash is a space to find your typing rhythm and build speed at your own pace.</p>
         <p>No accounts, no distractions. Your practice belongs to you.</p>
-        <p className={styles.dialogNote}>Type the words you see. Your first key starts a 30-second test. Use backspace to correct a mistake and space to move on.</p>
+        <p className={styles.dialogNote}>Choose a time or word count, then type what you see. Your first key starts the test. Use backspace to correct and space to move on. Changing settings starts a fresh test.</p>
         <form method="dialog"><button className={styles.dialogAction}>Back to practice <Icon name="arrow" width="17" height="17" /></button></form>
       </dialog>
     </div>

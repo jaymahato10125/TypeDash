@@ -1,9 +1,12 @@
 .workspace { width: 100%; }
-.toolbar { display: flex; align-items: center; justify-content: center; gap: 23px; width: fit-content; max-width: 100%; margin: 0 auto 43px; padding: 14px 22px; background: var(--surface); border: 1px solid var(--border); border-radius: 11px; font-size: 12px; color: var(--muted); user-select: none; }
-.mode { display: inline-flex; align-items: center; gap: 8px; color: var(--accent); }
+.toolbar { display: flex; align-items: center; justify-content: center; gap: 15px; width: fit-content; max-width: 100%; margin: 0 auto 43px; padding: 10px 15px; background: var(--surface); border: 1px solid var(--border); border-radius: 11px; font-size: 12px; color: var(--muted); user-select: none; }
+.controlGroup { display: flex; align-items: center; justify-content: center; gap: 4px; }
+.toolbarButton { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 7px; min-height: 32px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: var(--subtle-text); font-size: 12px; cursor: pointer; white-space: nowrap; }
+.toolbarButton:hover { color: var(--text); background: var(--background); }
+.toolbarButton[aria-pressed='true'] { color: var(--accent); background: #efc16b09; }
+.presets .toolbarButton { min-width: 31px; }
 .divider { align-self: stretch; width: 1px; min-height: 20px; background: var(--border-strong); }
-.selected { color: var(--text); }
-.language { display: inline-flex; align-items: center; gap: 7px; color: var(--subtle-text); }
+.language { display: inline-flex; align-items: center; gap: 7px; color: var(--subtle-text); font-size: 11px; }
 .promptHeader { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0 1px 19px; }
 .testLabel { color: var(--subtle-text); font-size: 11px; }
 .wordSet { color: var(--muted); }
@@ -12,6 +15,10 @@
 .inputArea { position: relative; border-radius: 5px; }
 .inputArea:focus-within { outline: 1px solid var(--border-strong); outline-offset: 13px; }
 .inputArea:not(:focus-within) .caret { visibility: hidden; }
+.unfocused .promptFrame { filter: blur(4px); opacity: .4; }
+.unfocused .caret { visibility: hidden; }
+.focusOverlay { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 11px; position: absolute; inset: 0; width: 100%; height: 100%; background: transparent; border: none; border-radius: 5px; color: var(--subtle-text); cursor: text; font-size: 11px; text-align: center; padding: 20px; }
+.focusTitle { display: inline-flex; align-items: center; gap: 11px; color: var(--text); font-size: 14px; }
 .promptFrame { overflow: hidden; height: 161px; padding-left: 3px; margin-left: -3px; line-height: 1.9; font-size: clamp(23px, 2.1vw, 28px); }
 .words { color: var(--prompt-text); letter-spacing: -0.45px; user-select: none; }
 .word { display: inline-block; max-width: 100%; overflow-wrap: anywhere; vertical-align: top; margin-right: 1ch; position: relative; }
@@ -30,7 +37,7 @@
 .instructions { color: var(--muted); font-family: var(--font-ui); font-size: 12px; text-align: center; margin: 0; line-height: 1.6; }
 .running .toolbar { opacity: .6; }
 .results { width: 100%; border: 1px solid var(--border); border-radius: 13px; padding: 30px 34px; background: var(--surface); }
-.resultHeader { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.resultHeader { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
 .resultEyebrow { font-size: 9px; letter-spacing: 1.5px; color: var(--accent); }
 .resultTitle { font-family: var(--font-ui); font-size: 28px; font-weight: 450; letter-spacing: -.8px; margin: 21px 0 27px; outline: none; }
 .resultTitle > span { color: var(--accent); }
@@ -48,15 +55,22 @@
 .retry:hover { color: var(--text); }
 .srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 @media (max-width: 700px) {
-  .toolbar { gap: 16px; padding: 13px 16px; margin-bottom: 34px; }
+  .toolbar { gap: 9px; padding: 10px; margin-bottom: 34px; flex-wrap: wrap; }
   .wordSet { display: none; }
   .promptFrame { height: 141px; line-height: 2; }
   .metrics { grid-template-columns: 1fr 1fr; row-gap: 25px; }
   .resultHeader { align-items: start; flex-direction: column; }
   .results { padding: 24px; }
 }
+@media (max-width: 600px) {
+  .toolbar { display: grid; grid-template-columns: 1fr 1fr; width: 100%; column-gap: 8px; row-gap: 8px; padding: 12px; }
+  .toolbar .divider { display: none; }
+  .modifiers { grid-column: 1 / -1; }
+  .controlGroup { gap: 2px; }
+  .toolbarButton { font-size: 11px; padding: 6px; min-height: 34px; }
+  .presets .toolbarButton { min-width: 28px; }
+}
 @media (max-width: 480px) {
-  .toolbar { gap: 13px; padding: 13px 14px; font-size: 11px; }
   .promptFrame { height: 140px; }
   .practiceActions { margin-top: 20px; }
   .instructions { max-width: 270px; }

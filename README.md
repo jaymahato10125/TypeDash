@@ -2,9 +2,11 @@
 
 A quiet typing app built with React, TypeScript, and Vite. No login, API keys, database, or application server.
 
-Phase 2 provides a working 30-second English typing test: start on the first key, see character feedback, edit mistakes, review WPM/raw speed/accuracy, and restart or retry the same text. More test modes, detailed results, and local progress will be implemented in later approved phases; see [PLAN.md](./PLAN.md).
+Phase 3 provides 15/30/60/120-second and 10/25/50/100-word English typing tests, punctuation and number options, character feedback, editing, focus recovery, and basic WPM/raw speed/accuracy results. Restart preserves settings, and same-text retry reproduces the prompt. Detailed results and local progress will be implemented in later approved phases; see [PLAN.md](./PLAN.md).
 
-Validation and browser screenshots are recorded in [the phase 2 handoff](./docs/phase-2.md).
+The default is a 30-second English test. Word mode initially selects 25 words; each mode remembers its last length until the page reloads. Changing a setting starts a fresh test. Focus loss blurs the prompt and shows a recovery control; active tests keep counting elapsed time.
+
+Validation and browser screenshots are recorded in [the phase 3 handoff](./docs/phase-3.md).
 
 **Run locally**
 
@@ -15,7 +17,7 @@ Use Node.js 24 and npm. Install dependencies with `npm ci`, then run `npm run de
 | `npm run dev` | Start local development. |
 | `npm run lint` | Check source and tooling with ESLint. |
 | `npm run typecheck` | Check application, fixtures, and test types. |
-| `npm test` | Replay scoring fixtures and test editing, timing, generation, and native input handling. |
+| `npm test` | Replay scoring fixtures and test every mode/option combination, editing, timing, generation, and native input handling. |
 | `npm run build` | Type-check, produce `dist/`, and enforce initial asset budgets. |
 | `npm run preview` | Preview the production build locally. |
 | `npm run test:e2e` | Run shell and complete typing flows against the production build. |

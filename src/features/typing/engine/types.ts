@@ -3,6 +3,9 @@ export type CharacterStatus = 'pending' | 'correct' | 'incorrect' | 'extra' | 'm
 
 export const TIME_PRESETS = [15, 30, 60, 120] as const
 export const WORD_PRESETS = [10, 25, 50, 100] as const
+export type TimePreset = typeof TIME_PRESETS[number]
+export type WordPreset = typeof WORD_PRESETS[number]
+export type TextOptions = Readonly<{ punctuation: boolean; numbers: boolean }>
 export const SCORING_VERSION = 1 as const
 
 type BaseConfig = Readonly<{
@@ -13,8 +16,8 @@ type BaseConfig = Readonly<{
 }>
 
 export type TestConfig = BaseConfig & (
-  | Readonly<{ mode: 'time'; durationSeconds: typeof TIME_PRESETS[number] }>
-  | Readonly<{ mode: 'words'; wordCount: typeof WORD_PRESETS[number] }>
+  | Readonly<{ mode: 'time'; durationSeconds: TimePreset }>
+  | Readonly<{ mode: 'words'; wordCount: WordPreset }>
 )
 
 export const DEFAULT_CONFIG = Object.freeze({

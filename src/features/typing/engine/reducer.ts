@@ -8,7 +8,7 @@ function pendingWord(target: string): TypedWord {
 }
 
 export function createTest(config: TestConfig = DEFAULT_CONFIG, seed = 1, targets?: readonly string[]): TestState {
-  const words = targets ?? generateWords(seed, config.mode === 'words' ? config.wordCount : 128)
+  const words = targets ?? generateWords(seed, config.mode === 'words' ? config.wordCount : 128, 0, config)
   if (words.length === 0 || words.some(word => word.length === 0 || /\s/.test(word))) {
     throw new RangeError('A test needs nonempty words without internal whitespace.')
   }
@@ -53,7 +53,7 @@ function submitWord(state: TestState, nowMs: number): TestState {
   // Constant-time indexed generation lets a timed test continue indefinitely.
   // Only a small nearby subset is mounted by the prompt renderer.
   if (state.activeWordIndex + 1 >= words.length) {
-    words.push(...generateWords(state.seed, 64, words.length).map(pendingWord))
+    words.push(...generateWords(state.seed, 64, words.length, state.config).map(pendingWord))
   }
   return { ...next, words, completedTotals: combineTotals(state.completedTotals, wordTotals(submitted)), activeWordIndex: state.activeWordIndex + 1 }
 }

@@ -1,6 +1,7 @@
-import { memo, useEffect, useLayoutEffect, useRef } from 'react'
+import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { Dispatch, RefObject } from 'react'
 import { bindTypingInput } from '../engine/input'
+import { Icon } from '../../../components/Icon'
 import type { TestAction, TestState, TypedWord } from '../engine/types'
 import styles from './TypingTest.module.css'
 
@@ -29,9 +30,26 @@ const PromptWord = memo(function PromptWord({ word, active }: { word: TypedWord;
 export function TypingPrompt({ state, dispatch, inputRef }: { state: TestState; dispatch: Dispatch<TestAction>; inputRef: RefObject<HTMLTextAreaElement | null> }) {
   const frameRef = useRef<HTMLDivElement>(null)
   const wordsRef = useRef<HTMLDivElement>(null)
+  const [focused, setFocused] = useState(false)
+  const [windowFocused, setWindowFocused] = useState(true)
   const activeLength = state.words[state.activeWordIndex]!.input.length
   const start = Math.max(0, state.activeWordIndex - 8)
   const visibleWords = state.words.slice(start, start + 64)
+
+  function focusInput() {
+    setFocused(true)
+    setWindowFocused(true)
+    inputRef.current?.focus({ preventScroll: true })
+    dispatch({ type: 'TICK', nowMs: performance.now() })
+  }
+
+  useEffect(() => {
+    const blur = () => setWindowFocused(false)
+    const focus = () => setWindowFocused(true)
+    window.addEventListener('blur', blur)
+    window.addEventListener('focus', focus)
+    return () => { window.removeEventListener('blur', blur); window.removeEventListener('focus', focus) }
+  }, [])
 
   useEffect(() => {
     if (!inputRef.current) return
@@ -69,7 +87,7 @@ export function TypingPrompt({ state, dispatch, inputRef }: { state: TestState; 
   }, [])
 
   return (
-    <div className={styles.inputArea}>
+    <div className={`${styles.inputArea} ${!focused || !windowFocused ? styles.unfocused : ''}`}>
       <div className={styles.promptFrame} ref={frameRef} aria-hidden="true">
         <div className={styles.words} ref={wordsRef}>
           {visibleWords.map((word, index) => <PromptWord key={`${state.seed}-${start + index}`} word={word} active={start + index === state.activeWordIndex} />)}
@@ -79,8 +97,12 @@ export function TypingPrompt({ state, dispatch, inputRef }: { state: TestState; 
       <textarea
         id="typing-input" ref={inputRef} className={styles.input} rows={1}
         aria-describedby="typing-instructions current-word" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-        onClick={() => inputRef.current?.focus()} onFocus={() => dispatch({ type: 'TICK', nowMs: performance.now() })}
+        onClick={focusInput} onBlur={() => setFocused(false)} onFocus={() => { setFocused(true); setWindowFocused(true); dispatch({ type: 'TICK', nowMs: performance.now() }) }}
       />
+      {(!focused || !windowFocused) && <button type="button" className={styles.focusOverlay} tabIndex={-1} onClick={focusInput} aria-label="Focus typing area">
+        <span className={styles.focusTitle}><Icon name="keyboard" width="21" height="21" /> Click to focus</span>
+        <span>{state.status === 'ready' ? 'or tab into the test. Your first key starts it.' : state.config.mode === 'time' ? 'The timer keeps running.' : 'Elapsed time keeps running.'}</span>
+      </button>}
       <span id="current-word" className={styles.srOnly}>Current word: {state.words[state.activeWordIndex]!.target}</span>
     </div>
   )

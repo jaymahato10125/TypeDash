@@ -1,6 +1,6 @@
 **TypeDash behavior contract — scoring version 1**
 
-Phase 1 defined the contract. Phase 2 implements it in the framework-independent engine. Follow the phase approval workflow in `PLAN.md`.
+Phase 1 defined the contract, phase 2 implemented the framework-independent engine, and phase 3 exposes its modes and controls. Follow the phase approval workflow in `PLAN.md`.
 
 **Reference observations**
 
@@ -26,6 +26,15 @@ Timeout behavior and detailed scoring should follow the explicit TypeDash rules 
 - Backspace edits the active buffer. From an empty active word, it can cross to a prior incorrect word, remove its submitted separator, and delete its last retained character. It does not erase prior input-attempt history. It cannot cross a correctly submitted word. Ctrl/Option/Command + Backspace clears the active word; when that word is empty it crosses into one prior incorrect word and clears that buffer. Deleting an extra character removes its raw and positional units while retaining its original failed attempt.
 - A time test continues after any correctly typed word. A word test completes on the exact last character of a correct final word, or when a nonempty final word is submitted with Space. A terminal Space is an insertion attempt but is not retained as a trailing separator, so it cannot inflate final raw or WPM units.
 - Focus loss and dialogs do not pause time. Restart discards the active run and returns to `ready`; same-text retry reuses the seed. Abandoned runs are not completed results.
+- A focus overlay blurs the prompt when the input loses focus or its window becomes inactive. Clicking the overlay or tabbing into the textarea restores input. Recovery checks the deadline before accepting more input; an expired timed test shows results. The overlay warns that an active test continues running.
+
+**Modes and settings**
+
+- Time presets are 15, 30, 60, and 120 seconds; the initial selection is 30 seconds. Word presets are 10, 25, 50, and 100 words; the initial word selection is 25. Each mode remembers its latest length in page-session memory. No settings are persisted before phase 4.
+- An actual mode, length, or modifier change discards the current run, creates a new seed, and clears counters, deadlines, input composition, and pending focus restoration. Clicking an already-selected mode or length leaves the run intact. Focus remains on the chosen setting so keyboard users can continue configuring it.
+- Restart and New test create new text with the current configuration. Retry same text retains both the seed and the full configuration, including modifiers. Timed prompt extension uses those same modifier settings.
+- Word mode has no time limit and shows submitted words out of its selected count. Its elapsed duration still includes idle and unfocused time. It needs no polling timer; monotonic timestamps on input/focus determine the final duration. Only timed runs schedule deadline callbacks.
+- Results show the completed run's mode, length, and modifiers. Word-test elapsed time uses one decimal place so short tests do not misleadingly display a whole zero seconds.
 
 **Metrics**
 
@@ -37,12 +46,14 @@ Character counts are positional: correct, incorrect, extra, and missed. Count re
 
 Before positive elapsed time, display no speed. Use zero for empty-attempt accuracy internally and display an unset value until insertion. Do not save empty or zero-duration results. Preserve full precision internally and round only displayed metrics. Initial fixtures in `tests/fixtures/scoring.ts` supply independent hand calculations; tests validate their arithmetic and replay the traces against the actual reducer. No results are persisted before the local-progress phase.
 
-The interface currently exposes only the approved 30-second English configuration. The engine also verifies final-word completion using internal fixtures, ahead of exposing word-mode controls in phase 3. The generator can extend a timed prompt at the end of its initial buffer so even a very fast run can finish its full duration.
+The interface exposes all eight presets and four punctuation/number combinations. The generator extends a timed prompt at the end of its initial buffer so even a very fast run can finish its full duration. The preset and option matrix is exercised in `tests/unit/modes.test.ts`, including long prompts that cross several generated batches.
 
 English words in `src/data/english.ts` are independently assembled for TypeDash. A stable indexed hash maps a seed and word offset to a word. Alternating disjoint pools prevent adjacent repeats, and independently generated batches preserve the same prefix. This is a reproducible practice generator, not a cryptographic or competitive challenge source.
 
+With punctuation enabled, each six-token group starts with a capital, has a comma after its third token, and ends with a seeded period, question mark, or exclamation mark. Capitalization and punctuation are part of the exact target. With numbers enabled, a seeded position in each seven-token group is replaced by a number from 10 through 9999. Applying these rules at absolute word offsets makes retries and extended batches deterministic; even a ten-word prompt includes the enabled modifiers. Both options can be combined.
+
 The rendered prompt mounts at most 64 words near the active position. Previously completed word totals are cached; metrics only combine those totals with the active word, so individual keypresses do not rescan the complete run. Input handles Unicode code points, with English-only targets; full grapheme and multilingual behavior remains outside the first-release language scope.
 
-**Covered Phase 2 edge traces**
+**Covered engine edge traces**
 
 First-key start; ignored leading Space; multiple inserts from composition; early submission; repeated Space; wrong and extra letters; correction preserving attempt errors; backtracking to an incorrect word; blocked crossing of correct words; word deletion; exact-deadline input; delayed UI tick; idle timeout; correct and incorrect unfinished prefixes; final-word completion; post-finish input; restart cleanup; and deterministic same-seed generation.
