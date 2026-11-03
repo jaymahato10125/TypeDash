@@ -1,6 +1,6 @@
 .tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 20px; }
 .tabs button, .back { border: 1px solid var(--border-strong); background: transparent; border-radius: 6px; color: var(--subtle-text); font-size: 12px; padding: 9px 13px; cursor: pointer; }
-.tabs button[aria-pressed='true'] { color: var(--accent); border-color: #efc16b55; }
+.tabs button[aria-pressed='true'] { color: var(--accent); border-color: var(--accent-border); }
 .tabs button span { font-size: 10px; padding-left: 6px; }
 .list { list-style: none; padding: 0; margin: 0; }
 .row, .bestRow { display: grid; grid-template-columns: 120px minmax(0, 1fr) 65px 78px; gap: 16px; align-items: center; width: 100%; padding: 15px 0; background: none; border: none; border-bottom: 1px solid var(--border-strong); text-align: left; color: var(--text); font-size: 12px; }

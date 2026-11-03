@@ -35,7 +35,10 @@ test('settings, a completed result, and its graph survive reload', async ({ page
   await page.getByRole('button', { name: 'History', exact: true }).click()
   await expect(page.getByTestId('history-count')).toHaveText('1')
   await page.getByTestId('history-result').first().click()
+  await expect(page.getByRole('dialog').getByRole('heading', { level: 3 })).toBeFocused()
   await expect(page.getByRole('dialog').getByTestId('speed-chart')).toBeVisible()
+  await page.getByRole('button', { name: '← Back to history' }).click()
+  await expect(page.getByTestId('history-result').first()).toBeFocused()
 })
 
 test('retry bests stay separate and inspecting results cannot duplicate a completion', async ({ page }) => {

@@ -4,36 +4,45 @@ import { bindTypingInput } from '../engine/input'
 import { Icon } from '../../../components/Icon'
 import type { TestAction, TestState, TypedWord } from '../engine/types'
 import styles from './TypingTest.module.css'
+import type { Appearance } from '../../settings/appearance'
+import { useSystemReducedMotion } from '../../settings/useReducedMotion'
+import { previousLineStart, scrollForCaret } from './promptLayout'
 
-const PromptWord = memo(function PromptWord({ word, active }: { word: TypedWord; active: boolean }) {
+const PromptWord = memo(function PromptWord({ word, active, index: wordIndex }: { word: TypedWord; active: boolean; index: number }) {
   const input = Array.from(word.input)
   const target = Array.from(word.target)
   const length = Math.max(target.length, input.length)
   const error = word.submitted && word.input !== word.target
 
   return (
-    <span className={`${styles.word} ${error ? styles.wordError : ''}`} data-active={active || undefined} data-target={word.target}>
+    <span className={`${styles.word} ${error ? styles.wordError : ''}`} data-active={active || undefined} data-target={word.target} data-word-index={wordIndex}>
       {Array.from({ length }, (_, index) => {
         const status = index >= target.length ? 'extra' : index >= input.length ? word.submitted ? 'missed' : 'pending' : input[index] === target[index] ? 'correct' : 'incorrect'
         return (
           <span key={index} className={styles.letter} data-state={status}>
-            {active && input.length === index && <span className={styles.caret} data-caret aria-hidden="true" />}
+            {active && input.length === index && <span className={styles.caretAnchor} data-caret-anchor aria-hidden="true" />}
             {input[index] ?? target[index]}
           </span>
         )
       })}
-      {active && input.length === length && <span className={styles.letter}><span className={styles.caret} data-caret aria-hidden="true" /></span>}
+      {active && input.length === length && <span className={styles.letter}><span className={styles.caretAnchor} data-caret-anchor aria-hidden="true" /></span>}
     </span>
   )
 })
 
-export function TypingPrompt({ state, dispatch, inputRef }: { state: TestState; dispatch: Dispatch<TestAction>; inputRef: RefObject<HTMLTextAreaElement | null> }) {
+export function TypingPrompt({ state, dispatch, inputRef, appearance }: { state: TestState; dispatch: Dispatch<TestAction>; inputRef: RefObject<HTMLTextAreaElement | null>; appearance: Appearance }) {
   const frameRef = useRef<HTMLDivElement>(null)
   const wordsRef = useRef<HTMLDivElement>(null)
+  const caretRef = useRef<HTMLSpanElement>(null)
   const [focused, setFocused] = useState(false)
   const [windowFocused, setWindowFocused] = useState(true)
   const activeLength = state.words[state.activeWordIndex]!.input.length
-  const start = Math.max(0, state.activeWordIndex - 8)
+  const [start, setStart] = useState(0)
+  const systemReduced = useSystemReducedMotion()
+  const reduceMotion = appearance.reduceMotion || systemReduced
+  const lastPosition = useRef<{ y: number; start: number } | null>(null)
+  const scrollTarget = useRef(0)
+  const measureRef = useRef<(() => void) | null>(null)
   const visibleWords = state.words.slice(start, start + 64)
 
   function focusInput() {
@@ -58,40 +67,65 @@ export function TypingPrompt({ state, dispatch, inputRef }: { state: TestState; 
 
   useLayoutEffect(() => {
     const frame = frameRef.current
-    const caret = wordsRef.current?.querySelector<HTMLElement>('[data-caret]')
-    if (!frame || !caret) return
-    const bounds = caret.getBoundingClientRect()
-    const container = frame.getBoundingClientRect()
-    const lineHeight = parseFloat(getComputedStyle(frame).lineHeight)
-    if (bounds.bottom > container.bottom - 5) frame.scrollTop += bounds.bottom - container.bottom + lineHeight / 2
-    else if (bounds.top < container.top) frame.scrollTop -= container.top - bounds.top + 4
-  }, [state.activeWordIndex, activeLength, state.seed])
+    const words = wordsRef.current
+    const caret = caretRef.current
+    if (!frame || !words || !caret) return
+    if (state.activeWordIndex < start || state.activeWordIndex >= start + 48) {
+      const lines = Array.from(words.querySelectorAll<HTMLElement>('[data-word-index]'), node => ({ index: Number(node.dataset.wordIndex), top: node.offsetTop }))
+      const next = state.activeWordIndex < start ? Math.max(0, state.activeWordIndex - 16) : previousLineStart(lines, state.activeWordIndex)
+      if (next !== null && next !== start) {
+        // This state reflects measured line wrapping; commit it before the next paint.
+        setStart(next)
+        return
+      }
+    }
+    const measure = (instant: boolean) => {
+      const anchor = words.querySelector<HTMLElement>('[data-caret-anchor]')
+      if (!anchor) return
+      // Read geometry together, then update the one floating caret and scroll target.
+      const bounds = anchor.getBoundingClientRect()
+      const container = frame.getBoundingClientRect()
+      const lineHeight = parseFloat(getComputedStyle(frame).lineHeight)
+      const x = bounds.left - container.left + frame.scrollLeft
+      const y = bounds.top - container.top + frame.scrollTop
+      const previous = lastPosition.current
+      const rebased = previous?.start !== start
+      const target = scrollForCaret(y, lineHeight, rebased ? 0 : scrollTarget.current)
+      caret.dataset.smooth = String(!instant && !reduceMotion && appearance.smoothCaret && !rebased && previous !== null && Math.abs(previous.y - y) < lineHeight / 2)
+      caret.style.height = `${bounds.height}px`
+      caret.style.transform = `translate3d(${x}px, ${y}px, 0)`
+      if (target !== scrollTarget.current || rebased || instant) {
+        frame.scrollTo({ top: target, behavior: instant || rebased || reduceMotion || Math.abs(target - frame.scrollTop) > lineHeight * 2 ? 'instant' : 'smooth' })
+        scrollTarget.current = target
+      }
+      lastPosition.current = { y, start }
+    }
+    measureRef.current = () => measure(true)
+    measure(false)
+  }, [state.activeWordIndex, activeLength, start, appearance.fontSize, appearance.smoothCaret, reduceMotion])
 
   useEffect(() => {
     const frame = frameRef.current
     if (!frame) return
     let active = true
-    const keepCaretVisible = () => {
-      if (!active) return
-      const caret = wordsRef.current?.querySelector<HTMLElement>('[data-caret]')
-      if (!caret) return
-      const bounds = caret.getBoundingClientRect()
-      const container = frame.getBoundingClientRect()
-      if (bounds.bottom > container.bottom) frame.scrollTop += bounds.bottom - container.bottom + 8
-      else if (bounds.top < container.top) frame.scrollTop -= container.top - bounds.top + 8
+    let resizeFrame: number | null = null
+    const onResize = () => {
+      if (resizeFrame !== null) cancelAnimationFrame(resizeFrame)
+      resizeFrame = requestAnimationFrame(() => { resizeFrame = null; if (active) measureRef.current?.() })
     }
-    const observer = new ResizeObserver(keepCaretVisible)
+    const observer = new ResizeObserver(onResize)
     observer.observe(frame)
-    void document.fonts.ready.then(keepCaretVisible)
-    return () => { active = false; observer.disconnect() }
+    void document.fonts.ready.then(() => { if (active) measureRef.current?.() })
+    return () => { active = false; observer.disconnect(); if (resizeFrame !== null) cancelAnimationFrame(resizeFrame) }
   }, [])
 
   return (
     <div className={`${styles.inputArea} ${!focused || !windowFocused ? styles.unfocused : ''}`}>
       <div className={styles.promptFrame} ref={frameRef} aria-hidden="true">
         <div className={styles.words} ref={wordsRef}>
-          {visibleWords.map((word, index) => <PromptWord key={`${state.seed}-${start + index}`} word={word} active={start + index === state.activeWordIndex} />)}
+          {visibleWords.map((word, index) => <PromptWord key={`${state.seed}-${start + index}`} word={word} index={start + index} active={start + index === state.activeWordIndex} />)}
         </div>
+        <span ref={caretRef} className={styles.caret} data-caret data-testid="typing-caret" />
       </div>
       <label className={styles.srOnly} htmlFor="typing-input">Typing input</label>
       <textarea

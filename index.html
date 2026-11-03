@@ -7,6 +7,12 @@
     <meta name="description" content="Find your rhythm with TypeDash, a quiet space to practice typing and build speed. No accounts. Just you and the keys." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>TypeDash — Find your rhythm</title>
+    <script>
+      try {
+        const saved = JSON.parse(localStorage.getItem('typedash.preferences'));
+        if (saved?.schemaVersion === 2 && saved.appearance?.theme === 'light') document.documentElement.dataset.theme = 'light';
+      } catch {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

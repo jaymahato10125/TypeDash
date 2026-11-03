@@ -1,6 +1,7 @@
 import { configurationKey } from '../../features/typing/engine/config'
 import { bestSummary, comparisonKey, defaultPreferences, isBetter, mergeProgress } from './model'
-import type { LocalResult, Preferences, ProgressData, ProgressSnapshot, Receipt } from './model'
+import type { LocalResult, Preferences, TestPreferences, ProgressData, ProgressSnapshot, Receipt } from './model'
+import type { Appearance } from '../../features/settings/appearance'
 import { parsePreferences, parseProgress } from './validation'
 
 export const PREFERENCES_KEY = 'typedash.preferences'
@@ -14,12 +15,14 @@ export function createProgressStore(getStorage: () => StorageLike | null, schedu
   let storage: StorageLike | null = null
   let initialNotice: string | null = null
   let preferences = defaultPreferences()
+  let needsMigration = false
   try {
     storage = getStorage()
     if (!storage) initialNotice = memoryNotice
     else {
       const parsed = parsePreferences(storage.getItem(PREFERENCES_KEY))
       preferences = parsed.value
+      needsMigration = parsed.migrated === true
       if (parsed.future) { storage = null; initialNotice = futureNotice }
       else if (parsed.recovered) initialNotice = 'Saved settings could not be read. Defaults are in use.'
     }
@@ -52,16 +55,20 @@ export function createProgressStore(getStorage: () => StorageLike | null, schedu
     notify()
   }
 
-  function savePreferences(next: Preferences) {
+  function writePreferences(next: Preferences) {
     const old = snapshot.preferences
-    if (configurationKey(old.config) === configurationKey(next.config) && old.time === next.time && old.words === next.words) return
-    snapshot = { ...snapshot, preferences: { ...next, config: { ...next.config } } }
+    if (!needsMigration && configurationKey(old.config) === configurationKey(next.config) && old.time === next.time && old.words === next.words && JSON.stringify(old.appearance) === JSON.stringify(next.appearance)) return
+    needsMigration = false
+    snapshot = { ...snapshot, preferences: { ...next, config: { ...next.config }, appearance: { ...next.appearance } } }
     if (storage) {
-      try { storage.setItem(PREFERENCES_KEY, JSON.stringify({ schemaVersion: 1, ...next })) }
+      try { storage.setItem(PREFERENCES_KEY, JSON.stringify({ schemaVersion: 2, ...next })) }
       catch { memoryFallback() }
     }
     notify()
   }
+
+  function savePreferences(next: TestPreferences) { writePreferences({ ...next, appearance: snapshot.preferences.appearance }) }
+  function saveAppearance(next: Appearance) { writePreferences({ ...snapshot.preferences, appearance: next }) }
 
   function flushPending() {
     cancelScheduled?.()
@@ -98,7 +105,7 @@ export function createProgressStore(getStorage: () => StorageLike | null, schedu
   return {
     getSnapshot: () => snapshot,
     subscribe(listener: () => void) { listeners.add(listener); return () => { listeners.delete(listener) } },
-    loadProgress, savePreferences, queueResult, flushPending,
+    loadProgress, savePreferences, saveAppearance, queueResult, flushPending,
   }
 }
 

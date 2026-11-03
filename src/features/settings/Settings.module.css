@@ -1,0 +1,18 @@
+.settings { font-family: var(--font-ui); }
+.intro { margin: 0 0 25px; color: var(--subtle-text); font-size: 14px; line-height: 1.6; }
+.settings fieldset { margin: 0 0 24px; padding: 0; border: 0; min-width: 0; }
+.settings legend { margin-bottom: 12px; color: var(--text); font: 12px var(--font-mono); }
+.choices { display: flex; gap: 8px; }
+.choices button { min-height: 42px; min-width: 74px; padding: 9px 15px; border-radius: 7px; border: 1px solid var(--border-strong); background: transparent; color: var(--subtle-text); cursor: pointer; font: 12px var(--font-mono); }
+.choices button:hover { color: var(--text); border-color: var(--muted); }
+.choices button[aria-pressed='true'] { background: var(--accent-soft); border-color: var(--accent-border); color: var(--accent); }
+.choices button span { margin-left: 3px; font-size: 10px; }
+.settings .preview { margin: 15px 0 0; padding: 12px; border-radius: 8px; background: var(--background); font-family: var(--font-mono); line-height: 1.6; overflow-wrap: anywhere; }
+.preview span { color: var(--accent); }
+.toggle { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 60px; cursor: pointer; font-size: 14px; }
+.toggle + .toggle { border-top: 1px solid var(--border); }
+.toggle small { display: block; margin-top: 5px; color: var(--subtle-text); font-size: 12px; line-height: 1.4; }
+.toggle input { flex-shrink: 0; width: 20px; height: 20px; margin: 10px 2px; accent-color: var(--accent); cursor: pointer; }
+.toggle:has(input:disabled) { color: var(--muted); cursor: default; }
+.note { color: var(--subtle-text); font-size: 12px; line-height: 1.5; }
+@media (max-width: 480px) { .choices button { flex: 1; } }

@@ -5,7 +5,7 @@
 .characters dd[data-kind='incorrect'], .characters dd[data-kind='extra'], .characters dd[data-kind='missed'] { color: var(--error); }
 .characterNote { font-family: var(--font-ui); color: var(--muted); font-size: 11px; line-height: 1.6; margin: 0; }
 .completion { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: -10px 0 23px; color: var(--subtle-text); font-size: 11px; }
-.bestBadge { color: var(--accent); border: 1px solid #efc16b40; background: #efc16b08; border-radius: 5px; padding: 5px 8px; }
+.bestBadge { color: var(--accent); border: 1px solid var(--accent-border); background: var(--accent-soft); border-radius: 5px; padding: 5px 8px; }
 .retryBadge { padding: 5px 8px; border: 1px solid var(--border-strong); border-radius: 5px; }
 .chart { width: 100%; min-width: 0; margin: 0 0 26px; }
 .chart svg { width: 100%; display: block; height: auto; overflow: visible; touch-action: pan-y; }

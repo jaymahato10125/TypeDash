@@ -1,6 +1,6 @@
 **TypeDash behavior contract — scoring version 1**
 
-Phases 1–3 established the engine and test controls. Phase 4 adds timeline sampling and browser-local progress. Follow the phase approval workflow in `PLAN.md`.
+Phases 1–3 established the engine and test controls. Phase 4 added timeline sampling and browser-local progress. Phase 5 adds appearance controls and interaction polish. Follow the phase approval workflow in `PLAN.md`.
 
 **Reference observations**
 
@@ -62,7 +62,15 @@ Before positive elapsed time, display no speed. Use zero for empty-attempt accur
 - Load preferences at startup. Load history on first inspection or completion. Preference writes depend on configuration changes, not keystrokes. Keep history, personal-best summaries, and their schema version in one atomic local-storage value; merge already-persisted data before a new completion write.
 - Keep the latest 100 results in descending completion order. Preserve personal-best summaries separately when old result rows are pruned. Their full graphs leave history with their result rows; the best summaries remain available.
 - Compare full-precision WPM only within matching mode, length, language, word-list version, punctuation, numbers, scoring version, and fresh/retry category. An exact WPM tie prefers higher accuracy; an equal score does not replace the existing best. Fresh-test bests and retry bests have visibly separate groups.
-- `typedash.preferences` and `typedash.progress` introduce schema version 1; earlier phases did not persist a legacy format. Validate configs, metrics, ordered finite graph values, endpoints, IDs, and metadata. Recover malformed preferences with defaults, salvage valid history rows, and reconstruct bests from valid retained history when possible. Unknown newer envelopes stay untouched and changes remain in memory.
+- `typedash.preferences` now uses schema version 2, migrating version-1 test settings with default appearance preferences. History and bests remain together in `typedash.progress` schema version 1 and are not rewritten by preference migration. Validate configs, metrics, ordered finite graph values, endpoints, IDs, and metadata. Invalid appearance falls back to defaults while retaining valid test settings. Salvage valid history rows and reconstruct bests from valid retained history when possible. Unknown newer envelopes stay untouched and changes remain in memory.
+
+**Appearance and interaction**
+
+- Default to dark, 28 px typing text, smooth caret enabled, reduced motion disabled, and live WPM/accuracy hidden. Settings offers dark/light and 22/28/34 px, with independent live-stat toggles. Appearance changes and reload persistence do not change scoring keys; appearance changes keep the current run and prompt.
+- Resolve reduced motion as the app preference OR the system media query. Disable the smooth-caret control while either is active, retaining its saved choice for later. Reduced motion uses instant caret placement and scrolling. Otherwise, glide for 75 ms between letters on the same line; line wraps, prompt rebases, and resize/font measurements place the caret instantly.
+- Keep at most 64 words mounted. When advancing beyond 48 words in the current window, retain the previous line and rebase on its first word to preserve wrapping. Keep two initial lines still, then scroll the active line toward the middle. Measure the active anchor and frame together; resize and font-readiness callbacks remeasure and clean up on unmount.
+- Show optional live statistics at no more than 10 Hz. These metrics do not generate live-region announcements. Input feedback, attempt counting, and deadline checks stay immediate and independent of this refresh.
+- Native dialogs contain focus; their boundary controls explicitly wrap Tab and Shift+Tab. Escape restores focus to the opener. History details focus their heading, and Back returns focus to the inspected result. Mobile headers use labeled icon buttons, dialogs scroll within the viewport, and large/extra input wraps without horizontal page overflow.
 - If reading or writing browser storage fails, keep the app usable in memory and show a concise notice. A result says "Kept for this visit" instead of claiming it was saved. Clearing browser data removes local progress; no account, API, or backend is involved.
 
 The interface exposes all eight presets and four punctuation/number combinations. The generator extends a timed prompt at the end of its initial buffer so even a very fast run can finish its full duration. The preset and option matrix is exercised in `tests/unit/modes.test.ts`, including long prompts that cross several generated batches.

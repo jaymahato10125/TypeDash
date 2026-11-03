@@ -6,9 +6,12 @@ import type { TestConfig } from '../engine/types'
 import { TestControls } from './TestControls'
 import { TypingPrompt } from './TypingPrompt'
 import styles from './TypingTest.module.css'
+import { useProgressSnapshot } from '../../../lib/storage/ProgressContext'
+import { LiveStats } from './LiveStats'
 
 export function TypingTest() {
   const { state, dispatch, restart, configure, selectMode, remainingSeconds } = useTypingTest()
+  const { preferences: { appearance } } = useProgressSnapshot()
   const input = useRef<HTMLTextAreaElement>(null)
   const focusFrame = useRef<number | null>(null)
 
@@ -43,9 +46,10 @@ export function TypingTest() {
         <>
           <div className={styles.promptHeader}>
             <span className={styles.language}><Icon name="globe" width="15" height="15" /> english<span className={styles.wordSet}> / common words</span></span>
+            {(appearance.liveWpm || appearance.liveAccuracy) && <LiveStats key={state.runId} state={state} wpm={appearance.liveWpm} accuracy={appearance.liveAccuracy} />}
             {state.config.mode === 'time' ? <span className={styles.timer} aria-label="Seconds remaining" data-testid="timer">{remainingSeconds}<span>s</span></span> : <span className={styles.timer} aria-label="Words completed" data-testid="word-progress">{state.activeWordIndex}<span>/ {state.config.wordCount} words</span></span>}
           </div>
-          <TypingPrompt key={state.seed} state={state} dispatch={dispatch} inputRef={input} />
+          <TypingPrompt key={state.runId} state={state} dispatch={dispatch} inputRef={input} appearance={appearance} />
           <div className={styles.practiceActions}>
             <button className={styles.refresh} type="button" onClick={() => restartAndFocus()} aria-label="Restart test" title="Restart test"><Icon name="refresh" /></button>
             <p className={styles.instructions} id="typing-instructions">{state.status === 'ready' ? 'Your first key starts the test. Backspace to correct, space to move on.' : 'Keep your rhythm. Backspace to correct, space for the next word.'}</p>

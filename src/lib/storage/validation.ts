@@ -2,8 +2,9 @@ import { TIME_PRESETS, WORD_PRESETS } from '../../features/typing/engine/types'
 import type { TestConfig, TestMetrics, TimelineSample, TimePreset, WordPreset } from '../../features/typing/engine/types'
 import { defaultPreferences, mergeProgress } from './model'
 import type { LocalResult, PersonalBest, Preferences, ProgressData } from './model'
+import { validateAppearance } from '../../features/settings/appearance'
 
-type Parsed<T> = { value: T; recovered: boolean; future: boolean }
+type Parsed<T> = { value: T; recovered: boolean; future: boolean; migrated?: boolean }
 const object = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value)
 const nonnegative = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value) && value >= 0
 const integer = (value: unknown): value is number => nonnegative(value) && Number.isSafeInteger(value)
@@ -49,11 +50,12 @@ export function parsePreferences(raw: string | null): Parsed<Preferences> {
   if (raw === null) return { value: fallback, recovered: false, future: false }
   try {
     const value: unknown = JSON.parse(raw)
-    if (object(value) && typeof value.schemaVersion === 'number' && value.schemaVersion > 1) return { value: fallback, recovered: true, future: true }
-    if (!object(value) || value.schemaVersion !== 1 || !TIME_PRESETS.includes(value.time as TimePreset) || !WORD_PRESETS.includes(value.words as WordPreset)) throw new Error('Invalid preferences')
+    if (object(value) && typeof value.schemaVersion === 'number' && value.schemaVersion > 2) return { value: fallback, recovered: true, future: true }
+    if (!object(value) || (value.schemaVersion !== 1 && value.schemaVersion !== 2) || !TIME_PRESETS.includes(value.time as TimePreset) || !WORD_PRESETS.includes(value.words as WordPreset)) throw new Error('Invalid preferences')
     const parsed = config(value.config)
     if (!parsed) throw new Error('Invalid configuration')
-    return { value: { config: parsed, time: parsed.mode === 'time' ? parsed.durationSeconds : value.time as TimePreset, words: parsed.mode === 'words' ? parsed.wordCount : value.words as WordPreset }, recovered: false, future: false }
+    const appearance = value.schemaVersion === 1 ? fallback.appearance : validateAppearance(value.appearance)
+    return { value: { config: parsed, time: parsed.mode === 'time' ? parsed.durationSeconds : value.time as TimePreset, words: parsed.mode === 'words' ? parsed.wordCount : value.words as WordPreset, appearance: appearance ?? fallback.appearance }, recovered: !appearance, future: false, migrated: value.schemaVersion === 1 }
   } catch { return { value: fallback, recovered: true, future: false } }
 }
 

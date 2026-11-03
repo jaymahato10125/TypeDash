@@ -76,7 +76,7 @@ describe('local persistence and idempotent completion', () => {
     store.queueResult(result('saved'))
     store.flushPending()
     const reloaded = createProgressStore(() => storage)
-    expect(reloaded.getSnapshot().preferences).toEqual(preferences)
+    expect(reloaded.getSnapshot().preferences).toEqual({ ...preferences, appearance: defaultPreferences().appearance })
     expect(reloaded.getSnapshot().loaded).toBe(false)
     reloaded.loadProgress()
     expect(reloaded.getSnapshot().results[0]!.id).toBe('saved')
@@ -147,6 +147,51 @@ describe('local persistence and idempotent completion', () => {
 })
 
 describe('corrupted and unavailable browser storage', () => {
+  it('migrates version-one preferences once without rewriting history or bests', () => {
+    const storage = new MemoryStorage()
+    const old = { config: selectWords(DEFAULT_CONFIG, 50), time: 120 as const, words: 50 as const }
+    storage.data.set(PREFERENCES_KEY, JSON.stringify({ schemaVersion: 1, ...old }))
+    const progress = JSON.stringify({ schemaVersion: 1, results: [result('before-upgrade')], bests: [] })
+    storage.data.set(PROGRESS_KEY, progress)
+    const store = createProgressStore(() => storage)
+    expect(store.getSnapshot().preferences).toEqual({ ...old, appearance: defaultPreferences().appearance })
+    expect(store.getSnapshot().notice).toBeNull()
+    expect(storage.writes).toEqual([])
+    store.savePreferences(old)
+    store.savePreferences(old)
+    expect(storage.writes).toEqual([PREFERENCES_KEY])
+    expect(JSON.parse(storage.data.get(PREFERENCES_KEY)!)).toMatchObject({ schemaVersion: 2, ...old })
+    store.loadProgress()
+    expect(store.getSnapshot().results[0]!.id).toBe('before-upgrade')
+    expect(store.getSnapshot().bests[0]!.id).toBe('before-upgrade')
+    expect(storage.data.get(PROGRESS_KEY)).toBe(progress)
+  })
+
+  it('changes appearance and test settings independently and persists both after reload', () => {
+    const storage = new MemoryStorage()
+    const store = createProgressStore(() => storage)
+    const appearance = { ...defaultPreferences().appearance, theme: 'light' as const, fontSize: 34 as const, liveWpm: true, reduceMotion: true }
+    store.saveAppearance(appearance)
+    expect(store.getSnapshot().preferences.config).toEqual(DEFAULT_CONFIG)
+    store.savePreferences({ config: selectTime(DEFAULT_CONFIG, 120), time: 120, words: 100 })
+    const reloaded = createProgressStore(() => storage)
+    expect(reloaded.getSnapshot().preferences).toEqual({ config: selectTime(DEFAULT_CONFIG, 120), time: 120, words: 100, appearance })
+    const writes = storage.writes.length
+    reloaded.saveAppearance(appearance)
+    expect(storage.writes).toHaveLength(writes)
+    expect(storage.writes).not.toContain(PROGRESS_KEY)
+  })
+
+  it('recovers invalid appearance while retaining a valid test configuration', () => {
+    const defaults = defaultPreferences()
+    for (const invalid of [null, { ...defaults.appearance, fontSize: 0 }, { ...defaults.appearance, theme: 'unknown' }, { ...defaults.appearance, liveWpm: 'true' }]) {
+      const parsed = parsePreferences(JSON.stringify({ schemaVersion: 2, config: selectWords(DEFAULT_CONFIG, 100), time: 60, words: 100, appearance: invalid }))
+      expect(parsed.recovered).toBe(true)
+      expect(parsed.future).toBe(false)
+      expect(parsed.value).toEqual({ ...defaults, config: selectWords(DEFAULT_CONFIG, 100), time: 60, words: 100 })
+    }
+  })
+
   it('recovers malformed preferences and can save valid replacements', () => {
     const storage = new MemoryStorage()
     storage.data.set(PREFERENCES_KEY, '{broken')

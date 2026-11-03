@@ -1,9 +1,12 @@
 import { configurationKey } from '../../features/typing/engine/config'
 import { calculateMetrics } from '../../features/typing/engine/metrics'
 import { DEFAULT_CONFIG, SCORING_VERSION } from '../../features/typing/engine/types'
+import { DEFAULT_APPEARANCE } from '../../features/settings/appearance'
+import type { Appearance } from '../../features/settings/appearance'
 import type { TestConfig, TestMetrics, TestState, TimelineSample, TimePreset, WordPreset } from '../../features/typing/engine/types'
 
-export type Preferences = Readonly<{ config: TestConfig; time: TimePreset; words: WordPreset }>
+export type TestPreferences = Readonly<{ config: TestConfig; time: TimePreset; words: WordPreset }>
+export type Preferences = TestPreferences & Readonly<{ appearance: Appearance }>
 export type LocalResult = Readonly<{
   id: string; createdAt: number; seed: number; retry: boolean; scoringVersion: number
   config: TestConfig; metrics: TestMetrics; timeline: readonly TimelineSample[]
@@ -16,7 +19,7 @@ export type ProgressSnapshot = ProgressData & Readonly<{
 }>
 
 export function defaultPreferences(): Preferences {
-  return { config: { ...DEFAULT_CONFIG }, time: 30, words: 25 }
+  return { config: { ...DEFAULT_CONFIG }, time: 30, words: 25, appearance: { ...DEFAULT_APPEARANCE } }
 }
 
 export function comparisonKey(result: Pick<LocalResult, 'config' | 'retry' | 'scoringVersion'>): string {

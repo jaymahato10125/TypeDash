@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { useProgressSnapshot } from '../../lib/storage/ProgressContext'
 import { comparisonKey } from '../../lib/storage/model'
 import type { LocalResult, PersonalBest } from '../../lib/storage/model'
@@ -13,7 +13,7 @@ function dateLabel(timestamp: number): string {
 
 function ResultRow({ result, inspect }: { result: LocalResult; inspect: () => void }) {
   return (
-    <li><button className={styles.row} type="button" onClick={inspect} data-testid="history-result" aria-label={`View ${describeConfiguration(result.config)}, ${dateLabel(result.createdAt)}, ${Math.round(result.metrics.wpm)} words per minute`}>
+    <li><button className={styles.row} type="button" onClick={inspect} data-result-id={result.id} data-testid="history-result" aria-label={`View ${describeConfiguration(result.config)}, ${dateLabel(result.createdAt)}, ${Math.round(result.metrics.wpm)} words per minute`}>
       <span className={styles.date}>{dateLabel(result.createdAt)}</span>
       <span className={styles.configuration}>{describeConfiguration(result.config)}<small>{result.retry ? 'same-text retry' : 'fresh test'}</small></span>
       <span className={styles.number}><strong>{result.metrics.wpm.toFixed(1)}</strong><small>wpm</small></span>
@@ -32,11 +32,21 @@ export default function HistoryPanel() {
   const snapshot = useProgressSnapshot()
   const [tab, setTab] = useState<'recent' | 'bests'>('recent')
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const panel = useRef<HTMLDivElement>(null)
+  const returnTo = useRef<string | null>(null)
   const selected = snapshot.results.find(result => result.id === selectedId)
 
-  if (selected) return <div className={styles.detail}>
+  useLayoutEffect(() => {
+    if (selectedId) panel.current?.querySelector<HTMLHeadingElement>('h3')?.focus()
+    else if (returnTo.current) {
+      Array.from(panel.current?.querySelectorAll<HTMLButtonElement>('[data-result-id]') ?? []).find(row => row.dataset.resultId === returnTo.current)?.focus()
+      returnTo.current = null
+    }
+  }, [selectedId])
+
+  if (selected) return <div ref={panel} className={styles.detail}>
     <button type="button" className={styles.back} onClick={() => setSelectedId(null)}>← Back to history</button>
-    <h3>{describeConfiguration(selected.config)}</h3>
+    <h3 tabIndex={-1}>{describeConfiguration(selected.config)}</h3>
     <div className={styles.detailMeta}>{dateLabel(selected.createdAt)} · {selected.retry ? 'same-text retry' : 'fresh test'}</div>
     <dl className={styles.summary}>
       <div><dt>wpm</dt><dd>{selected.metrics.wpm.toFixed(1)}</dd></div><div><dt>accuracy</dt><dd>{selected.metrics.accuracy.toFixed(1)}%</dd></div><div><dt>raw wpm</dt><dd>{selected.metrics.rawWpm.toFixed(1)}</dd></div><div><dt>time</dt><dd>{(selected.metrics.elapsedMs / 1000).toFixed(1)}s</dd></div>
@@ -44,13 +54,13 @@ export default function HistoryPanel() {
     <CharacterBreakdown characters={selected.metrics.characters} /><SpeedChart samples={selected.timeline} />
   </div>
 
-  return <div>
+  return <div ref={panel}>
     <div className={styles.tabs} role="group" aria-label="History view">
       <button type="button" aria-pressed={tab === 'recent'} onClick={() => setTab('recent')}>Recent tests <span data-testid="history-count">{snapshot.results.length}</span></button>
       <button type="button" aria-pressed={tab === 'bests'} onClick={() => setTab('bests')}>Personal bests</button>
     </div>
     {snapshot.notice && <div className={styles.notice}>{snapshot.notice}</div>}
-    {tab === 'recent' ? snapshot.results.length ? <ul className={styles.list}>{snapshot.results.map(result => <ResultRow key={result.id} result={result} inspect={() => setSelectedId(result.id)} />)}</ul> : <div className={styles.empty}>Your recent practice will appear here.<br /><span>Complete a test to get started.</span></div> : snapshot.bests.length ? <><BestRows bests={snapshot.bests} retry={false} /><BestRows bests={snapshot.bests} retry /></> : <div className={styles.empty}>Your first completed test will set a personal best.</div>}
+    {tab === 'recent' ? snapshot.results.length ? <ul className={styles.list}>{snapshot.results.map(result => <ResultRow key={result.id} result={result} inspect={() => { returnTo.current = result.id; setSelectedId(result.id) }} />)}</ul> : <div className={styles.empty}>Your recent practice will appear here.<br /><span>Complete a test to get started.</span></div> : snapshot.bests.length ? <><BestRows bests={snapshot.bests} retry={false} /><BestRows bests={snapshot.bests} retry /></> : <div className={styles.empty}>Your first completed test will set a personal best.</div>}
     <div className={styles.privacy}>{snapshot.persistent ? 'Saved only in this browser.' : 'Kept in memory for this visit.'} The latest 100 results are kept. Personal bests survive older results leaving the list. Fresh tests and retries are compared separately.</div>
   </div>
 }
