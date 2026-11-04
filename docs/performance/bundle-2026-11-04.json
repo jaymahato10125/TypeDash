@@ -1,0 +1,35 @@
+{
+  "initialJavaScriptGzipBytes": 82348,
+  "initialAssetsGzipBytes": 100470,
+  "budget": {
+    "initialJavaScriptGzipBytes": 100000,
+    "initialAssetsGzipBytes": 200000
+  },
+  "files": [
+    {
+      "file": "assets/index-CINXlgXh.css",
+      "bytes": 18795,
+      "gzipBytes": 4635
+    },
+    {
+      "file": "assets/index-CqOAcCyc.js",
+      "bytes": 267161,
+      "gzipBytes": 82348
+    },
+    {
+      "file": "assets/roboto-mono-latin-400-normal-GekRknry.woff2",
+      "bytes": 12680,
+      "gzipBytes": 12703
+    },
+    {
+      "file": "favicon.svg",
+      "bytes": 298,
+      "gzipBytes": 178
+    },
+    {
+      "file": "index.html",
+      "bytes": 1080,
+      "gzipBytes": 606
+    }
+  ]
+}

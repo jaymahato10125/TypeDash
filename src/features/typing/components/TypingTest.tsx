@@ -15,6 +15,10 @@ export function TypingTest() {
   const input = useRef<HTMLTextAreaElement>(null)
   const focusFrame = useRef<number | null>(null)
 
+  // Child input bindings have mounted before this effect. One readiness mark
+  // lets production-load checks measure usability without a telemetry service.
+  useEffect(() => { performance.mark('typedash:ready') }, [])
+
   useEffect(() => () => {
     if (focusFrame.current !== null) cancelAnimationFrame(focusFrame.current)
   }, [])
@@ -51,7 +55,7 @@ export function TypingTest() {
           </div>
           <TypingPrompt key={state.runId} state={state} dispatch={dispatch} inputRef={input} appearance={appearance} />
           <div className={styles.practiceActions}>
-            <button className={styles.refresh} type="button" onClick={() => restartAndFocus()} aria-label="Restart test" title="Restart test"><Icon name="refresh" /></button>
+            <button tabIndex={0} className={styles.refresh} type="button" onClick={() => restartAndFocus()} aria-label="Restart test" title="Restart test"><Icon name="refresh" /></button>
             <p className={styles.instructions} id="typing-instructions">{state.status === 'ready' ? 'Your first key starts the test. Backspace to correct, space to move on.' : 'Keep your rhythm. Backspace to correct, space for the next word.'}</p>
           </div>
         </>

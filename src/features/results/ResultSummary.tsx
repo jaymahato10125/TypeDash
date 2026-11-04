@@ -9,6 +9,7 @@ import { comparisonKey, createResult } from '../../lib/storage/model'
 import { CharacterBreakdown } from './CharacterBreakdown'
 import details from './Results.module.css'
 import styles from '../typing/components/TypingTest.module.css'
+import { PanelBoundary } from '../../components/PanelBoundary'
 
 const SpeedChart = lazy(() => import('./SpeedChart'))
 
@@ -43,11 +44,11 @@ export function ResultSummary({ state, restart }: { state: TestState; restart: (
         <div><dt>time</dt><dd data-testid="result-time">{(metrics.elapsedMs / 1000).toFixed(state.config.mode === 'time' ? 0 : 1)}<span>s</span></dd></div>
       </dl>
       <CharacterBreakdown characters={metrics.characters} />
-      <Suspense fallback={<div className={details.chartPlaceholder}>Loading your speed graph…</div>}><SpeedChart samples={state.timeline} /></Suspense>
+      <PanelBoundary key={state.runId} fallback={<div className={details.chartPlaceholder} role="status">The graph couldn’t load. Your scores are still available.</div>}><Suspense fallback={<div className={details.chartPlaceholder}>Loading your speed graph…</div>}><SpeedChart samples={state.timeline} /></Suspense></PanelBoundary>
       <p className={styles.scoreExplanation}>WPM credits correct words{state.config.mode === 'time' ? ' and an exact unfinished prefix' : ''}. Accuracy keeps every typing attempt, including corrected errors.</p>
       <div className={styles.resultActions}>
-        <button type="button" className={styles.newTest} onClick={() => restart()}>New test <Icon name="arrow" width="17" height="17" /></button>
-        <button type="button" className={styles.retry} onClick={() => restart(true)}><Icon name="refresh" width="17" height="17" /> Retry same text</button>
+        <button tabIndex={0} type="button" className={styles.newTest} onClick={() => restart()}>New test <Icon name="arrow" width="17" height="17" /></button>
+        <button tabIndex={0} type="button" className={styles.retry} onClick={() => restart(true)}><Icon name="refresh" width="17" height="17" /> Retry same text</button>
       </div>
     </section>
   )

@@ -1,6 +1,6 @@
 **TypeDash behavior contract — scoring version 1**
 
-Phases 1–3 established the engine and test controls. Phase 4 added timeline sampling and browser-local progress. Phase 5 adds appearance controls and interaction polish. Follow the phase approval workflow in `PLAN.md`.
+Phases 1–3 established the engine and test controls. Phase 4 added timeline sampling and browser-local progress. Phase 5 added appearance controls and interaction polish. Phase 6 adds release checks and deployment configuration. Follow the phase approval workflow in `PLAN.md`.
 
 **Reference observations**
 
@@ -70,7 +70,7 @@ Before positive elapsed time, display no speed. Use zero for empty-attempt accur
 - Resolve reduced motion as the app preference OR the system media query. Disable the smooth-caret control while either is active, retaining its saved choice for later. Reduced motion uses instant caret placement and scrolling. Otherwise, glide for 75 ms between letters on the same line; line wraps, prompt rebases, and resize/font measurements place the caret instantly.
 - Keep at most 64 words mounted. When advancing beyond 48 words in the current window, retain the previous line and rebase on its first word to preserve wrapping. Keep two initial lines still, then scroll the active line toward the middle. Measure the active anchor and frame together; resize and font-readiness callbacks remeasure and clean up on unmount.
 - Show optional live statistics at no more than 10 Hz. These metrics do not generate live-region announcements. Input feedback, attempt counting, and deadline checks stay immediate and independent of this refresh.
-- Native dialogs contain focus; their boundary controls explicitly wrap Tab and Shift+Tab. Escape restores focus to the opener. History details focus their heading, and Back returns focus to the inspected result. Mobile headers use labeled icon buttons, dialogs scroll within the viewport, and large/extra input wraps without horizontal page overflow.
+- Native dialogs contain focus; their boundary controls explicitly wrap Tab and Shift+Tab. Escape explicitly restores focus to the opener, including browsers that do not focus pointer-clicked buttons. Controls use zero tab indices to preserve DOM order and inclusion in macOS WebKit's keyboard navigation. History details focus their heading, and Back returns focus to the inspected result. Mobile headers use labeled icon buttons, dialogs scroll within the viewport, and large/extra input wraps without horizontal page overflow.
 - If reading or writing browser storage fails, keep the app usable in memory and show a concise notice. A result says "Kept for this visit" instead of claiming it was saved. Clearing browser data removes local progress; no account, API, or backend is involved.
 
 The interface exposes all eight presets and four punctuation/number combinations. The generator extends a timed prompt at the end of its initial buffer so even a very fast run can finish its full duration. The preset and option matrix is exercised in `tests/unit/modes.test.ts`, including long prompts that cross several generated batches.
@@ -84,3 +84,9 @@ The rendered prompt mounts at most 64 words near the active position. Previously
 **Covered engine edge traces**
 
 First-key start; ignored leading Space; multiple inserts from composition; early submission; repeated Space; wrong and extra letters; correction preserving attempt errors; backtracking to an incorrect word; blocked crossing of correct words; word deletion; exact-deadline input; delayed UI tick; idle timeout; correct and incorrect unfinished prefixes; final-word completion; post-finish input; restart cleanup; and deterministic same-seed generation.
+
+**Release behavior**
+
+- Serve a static Vite build with a bundled, preloaded WOFF2 font. Starting or restarting a test needs no additional request after readiness. Charts, History, and Settings load on demand; their initial load requires a connection. A failed optional-panel download has a contained fallback. Scores and the restart controls remain available when the result graph fails.
+- Emit one `typedash:ready` performance mark after initial input bindings mount. It stays in browser memory and is never transmitted. Profiling observers, fixture seeding, request recording, and CDP tracing live in test code and are not shipped.
+- Vercel caches hashed `/assets/` files as immutable for a year and revalidates `/` and `/index.html`. All application navigation stays in the root document. Publishing, live header checks, and physical-device checks are separate release actions described in `docs/release.md`.

@@ -1,0 +1,40 @@
+{
+  "measuredAt": "2026-11-04T02:46:05.928Z",
+  "browser": "156.0.8078.4",
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "cpu": "Apple M2"
+  },
+  "profile": {
+    "coldCache": true,
+    "cpuSlowdown": 4,
+    "downloadBytesPerSecond": 1012500,
+    "uploadBytesPerSecond": 168750,
+    "latencyMs": 165
+  },
+  "runs": [
+    {
+      "lcpMs": 648,
+      "readyMs": 609.2000000029802
+    },
+    {
+      "lcpMs": 656,
+      "readyMs": 626
+    },
+    {
+      "lcpMs": 660,
+      "readyMs": 622.7999999970198
+    },
+    {
+      "lcpMs": 664,
+      "readyMs": 621.3999999910593
+    },
+    {
+      "lcpMs": 676,
+      "readyMs": 638.5
+    }
+  ],
+  "medianLcpMs": 660,
+  "medianReadyMs": 622.7999999970198
+}

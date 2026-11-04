@@ -1,0 +1,40 @@
+{
+  "measuredAt": "2026-11-04T02:06:17.303Z",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "cpu": "Apple M2",
+    "logicalCpus": 8,
+    "memoryGiB": 16
+  },
+  "scope": "Node engine reducer only. Excludes browser input dispatch, React, layout, paint, display refresh, and loading. Not a browser latency result.",
+  "trace": {
+    "runs": 10,
+    "warmupRuns": 3,
+    "charactersPerRun": 3000,
+    "simulatedWpm": 300,
+    "simulatedSeconds": 120,
+    "largestLogicalWordBuffer": 640,
+    "loadedHistory": 100
+  },
+  "insertion": {
+    "samples": 30000,
+    "medianMs": 0.0003,
+    "p95Ms": 0.0007,
+    "p99Ms": 0.0014,
+    "maxMs": 0.1192
+  },
+  "restart": {
+    "samples": 1000,
+    "medianMs": 0.0145,
+    "p95Ms": 0.0151,
+    "p99Ms": 0.0212,
+    "maxMs": 0.1604
+  },
+  "regressionLimits": {
+    "insertionP95Ms": 4,
+    "engineRestartP95Ms": 100
+  },
+  "passed": true
+}

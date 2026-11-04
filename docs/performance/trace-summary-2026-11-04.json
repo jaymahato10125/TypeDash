@@ -1,0 +1,654 @@
+{
+  "scope": "Diagnostic trace with screenshot capture enabled. Trace overhead can affect presentation. EventTiming durations use browser presentation data; screenshot capture timestamps and expected_display_time estimates are not substituted for presentation.",
+  "inputs": 160,
+  "commits": 160,
+  "screenshotFrames": 424,
+  "keyboardPresentation": {
+    "samples": 160,
+    "medianMs": 37.423,
+    "p95Ms": 54.52,
+    "maxMs": 57.835
+  },
+  "inputToCommit": [
+    {
+      "id": "typedash:input:1",
+      "inputToCommitMs": 2.555
+    },
+    {
+      "id": "typedash:input:2",
+      "inputToCommitMs": 0.637
+    },
+    {
+      "id": "typedash:input:3",
+      "inputToCommitMs": 0.622
+    },
+    {
+      "id": "typedash:input:4",
+      "inputToCommitMs": 0.762
+    },
+    {
+      "id": "typedash:input:5",
+      "inputToCommitMs": 0.934
+    },
+    {
+      "id": "typedash:input:6",
+      "inputToCommitMs": 0.939
+    },
+    {
+      "id": "typedash:input:7",
+      "inputToCommitMs": 0.991
+    },
+    {
+      "id": "typedash:input:8",
+      "inputToCommitMs": 1.077
+    },
+    {
+      "id": "typedash:input:9",
+      "inputToCommitMs": 1.096
+    },
+    {
+      "id": "typedash:input:10",
+      "inputToCommitMs": 1.464
+    },
+    {
+      "id": "typedash:input:11",
+      "inputToCommitMs": 0.983
+    },
+    {
+      "id": "typedash:input:12",
+      "inputToCommitMs": 0.932
+    },
+    {
+      "id": "typedash:input:13",
+      "inputToCommitMs": 1.36
+    },
+    {
+      "id": "typedash:input:14",
+      "inputToCommitMs": 0.97
+    },
+    {
+      "id": "typedash:input:15",
+      "inputToCommitMs": 1.2
+    },
+    {
+      "id": "typedash:input:16",
+      "inputToCommitMs": 1.599
+    },
+    {
+      "id": "typedash:input:17",
+      "inputToCommitMs": 1.727
+    },
+    {
+      "id": "typedash:input:18",
+      "inputToCommitMs": 0.949
+    },
+    {
+      "id": "typedash:input:19",
+      "inputToCommitMs": 1.242
+    },
+    {
+      "id": "typedash:input:20",
+      "inputToCommitMs": 0.791
+    },
+    {
+      "id": "typedash:input:21",
+      "inputToCommitMs": 0.999
+    },
+    {
+      "id": "typedash:input:22",
+      "inputToCommitMs": 1.502
+    },
+    {
+      "id": "typedash:input:23",
+      "inputToCommitMs": 1.467
+    },
+    {
+      "id": "typedash:input:24",
+      "inputToCommitMs": 1.028
+    },
+    {
+      "id": "typedash:input:25",
+      "inputToCommitMs": 1.02
+    },
+    {
+      "id": "typedash:input:26",
+      "inputToCommitMs": 1.032
+    },
+    {
+      "id": "typedash:input:27",
+      "inputToCommitMs": 1.104
+    },
+    {
+      "id": "typedash:input:28",
+      "inputToCommitMs": 0.823
+    },
+    {
+      "id": "typedash:input:29",
+      "inputToCommitMs": 0.881
+    },
+    {
+      "id": "typedash:input:30",
+      "inputToCommitMs": 1.409
+    },
+    {
+      "id": "typedash:input:31",
+      "inputToCommitMs": 1.257
+    },
+    {
+      "id": "typedash:input:32",
+      "inputToCommitMs": 1.075
+    },
+    {
+      "id": "typedash:input:33",
+      "inputToCommitMs": 0.939
+    },
+    {
+      "id": "typedash:input:34",
+      "inputToCommitMs": 1.842
+    },
+    {
+      "id": "typedash:input:35",
+      "inputToCommitMs": 1.235
+    },
+    {
+      "id": "typedash:input:36",
+      "inputToCommitMs": 1.046
+    },
+    {
+      "id": "typedash:input:37",
+      "inputToCommitMs": 1.767
+    },
+    {
+      "id": "typedash:input:38",
+      "inputToCommitMs": 1.638
+    },
+    {
+      "id": "typedash:input:39",
+      "inputToCommitMs": 1.789
+    },
+    {
+      "id": "typedash:input:40",
+      "inputToCommitMs": 1.165
+    },
+    {
+      "id": "typedash:input:41",
+      "inputToCommitMs": 1.352
+    },
+    {
+      "id": "typedash:input:42",
+      "inputToCommitMs": 0.997
+    },
+    {
+      "id": "typedash:input:43",
+      "inputToCommitMs": 1.211
+    },
+    {
+      "id": "typedash:input:44",
+      "inputToCommitMs": 0.873
+    },
+    {
+      "id": "typedash:input:45",
+      "inputToCommitMs": 0.937
+    },
+    {
+      "id": "typedash:input:46",
+      "inputToCommitMs": 1.883
+    },
+    {
+      "id": "typedash:input:47",
+      "inputToCommitMs": 1.046
+    },
+    {
+      "id": "typedash:input:48",
+      "inputToCommitMs": 1.022
+    },
+    {
+      "id": "typedash:input:49",
+      "inputToCommitMs": 1.051
+    },
+    {
+      "id": "typedash:input:50",
+      "inputToCommitMs": 0.961
+    },
+    {
+      "id": "typedash:input:51",
+      "inputToCommitMs": 1.298
+    },
+    {
+      "id": "typedash:input:52",
+      "inputToCommitMs": 1.709
+    },
+    {
+      "id": "typedash:input:53",
+      "inputToCommitMs": 0.977
+    },
+    {
+      "id": "typedash:input:54",
+      "inputToCommitMs": 1.344
+    },
+    {
+      "id": "typedash:input:55",
+      "inputToCommitMs": 1.331
+    },
+    {
+      "id": "typedash:input:56",
+      "inputToCommitMs": 1.293
+    },
+    {
+      "id": "typedash:input:57",
+      "inputToCommitMs": 1.4
+    },
+    {
+      "id": "typedash:input:58",
+      "inputToCommitMs": 1.131
+    },
+    {
+      "id": "typedash:input:59",
+      "inputToCommitMs": 0.609
+    },
+    {
+      "id": "typedash:input:60",
+      "inputToCommitMs": 0.571
+    },
+    {
+      "id": "typedash:input:61",
+      "inputToCommitMs": 0.868
+    },
+    {
+      "id": "typedash:input:62",
+      "inputToCommitMs": 0.999
+    },
+    {
+      "id": "typedash:input:63",
+      "inputToCommitMs": 0.978
+    },
+    {
+      "id": "typedash:input:64",
+      "inputToCommitMs": 1.727
+    },
+    {
+      "id": "typedash:input:65",
+      "inputToCommitMs": 1.022
+    },
+    {
+      "id": "typedash:input:66",
+      "inputToCommitMs": 1.103
+    },
+    {
+      "id": "typedash:input:67",
+      "inputToCommitMs": 0.882
+    },
+    {
+      "id": "typedash:input:68",
+      "inputToCommitMs": 1.165
+    },
+    {
+      "id": "typedash:input:69",
+      "inputToCommitMs": 1.237
+    },
+    {
+      "id": "typedash:input:70",
+      "inputToCommitMs": 1.076
+    },
+    {
+      "id": "typedash:input:71",
+      "inputToCommitMs": 1.06
+    },
+    {
+      "id": "typedash:input:72",
+      "inputToCommitMs": 0.984
+    },
+    {
+      "id": "typedash:input:73",
+      "inputToCommitMs": 0.993
+    },
+    {
+      "id": "typedash:input:74",
+      "inputToCommitMs": 1.093
+    },
+    {
+      "id": "typedash:input:75",
+      "inputToCommitMs": 1.178
+    },
+    {
+      "id": "typedash:input:76",
+      "inputToCommitMs": 0.89
+    },
+    {
+      "id": "typedash:input:77",
+      "inputToCommitMs": 1.099
+    },
+    {
+      "id": "typedash:input:78",
+      "inputToCommitMs": 1.095
+    },
+    {
+      "id": "typedash:input:79",
+      "inputToCommitMs": 0.827
+    },
+    {
+      "id": "typedash:input:80",
+      "inputToCommitMs": 1.406
+    },
+    {
+      "id": "typedash:input:81",
+      "inputToCommitMs": 1.544
+    },
+    {
+      "id": "typedash:input:82",
+      "inputToCommitMs": 0.925
+    },
+    {
+      "id": "typedash:input:83",
+      "inputToCommitMs": 0.767
+    },
+    {
+      "id": "typedash:input:84",
+      "inputToCommitMs": 1.287
+    },
+    {
+      "id": "typedash:input:85",
+      "inputToCommitMs": 0.87
+    },
+    {
+      "id": "typedash:input:86",
+      "inputToCommitMs": 1.326
+    },
+    {
+      "id": "typedash:input:87",
+      "inputToCommitMs": 1.157
+    },
+    {
+      "id": "typedash:input:88",
+      "inputToCommitMs": 0.957
+    },
+    {
+      "id": "typedash:input:89",
+      "inputToCommitMs": 1.027
+    },
+    {
+      "id": "typedash:input:90",
+      "inputToCommitMs": 0.835
+    },
+    {
+      "id": "typedash:input:91",
+      "inputToCommitMs": 0.745
+    },
+    {
+      "id": "typedash:input:92",
+      "inputToCommitMs": 1.771
+    },
+    {
+      "id": "typedash:input:93",
+      "inputToCommitMs": 0.872
+    },
+    {
+      "id": "typedash:input:94",
+      "inputToCommitMs": 1.387
+    },
+    {
+      "id": "typedash:input:95",
+      "inputToCommitMs": 0.96
+    },
+    {
+      "id": "typedash:input:96",
+      "inputToCommitMs": 0.973
+    },
+    {
+      "id": "typedash:input:97",
+      "inputToCommitMs": 1.15
+    },
+    {
+      "id": "typedash:input:98",
+      "inputToCommitMs": 0.918
+    },
+    {
+      "id": "typedash:input:99",
+      "inputToCommitMs": 0.946
+    },
+    {
+      "id": "typedash:input:100",
+      "inputToCommitMs": 0.972
+    },
+    {
+      "id": "typedash:input:101",
+      "inputToCommitMs": 0.886
+    },
+    {
+      "id": "typedash:input:102",
+      "inputToCommitMs": 0.99
+    },
+    {
+      "id": "typedash:input:103",
+      "inputToCommitMs": 1.917
+    },
+    {
+      "id": "typedash:input:104",
+      "inputToCommitMs": 1.657
+    },
+    {
+      "id": "typedash:input:105",
+      "inputToCommitMs": 0.916
+    },
+    {
+      "id": "typedash:input:106",
+      "inputToCommitMs": 0.851
+    },
+    {
+      "id": "typedash:input:107",
+      "inputToCommitMs": 1.126
+    },
+    {
+      "id": "typedash:input:108",
+      "inputToCommitMs": 0.935
+    },
+    {
+      "id": "typedash:input:109",
+      "inputToCommitMs": 1.091
+    },
+    {
+      "id": "typedash:input:110",
+      "inputToCommitMs": 0.942
+    },
+    {
+      "id": "typedash:input:111",
+      "inputToCommitMs": 1.01
+    },
+    {
+      "id": "typedash:input:112",
+      "inputToCommitMs": 0.926
+    },
+    {
+      "id": "typedash:input:113",
+      "inputToCommitMs": 0.828
+    },
+    {
+      "id": "typedash:input:114",
+      "inputToCommitMs": 1.027
+    },
+    {
+      "id": "typedash:input:115",
+      "inputToCommitMs": 1.119
+    },
+    {
+      "id": "typedash:input:116",
+      "inputToCommitMs": 0.993
+    },
+    {
+      "id": "typedash:input:117",
+      "inputToCommitMs": 1.131
+    },
+    {
+      "id": "typedash:input:118",
+      "inputToCommitMs": 1.622
+    },
+    {
+      "id": "typedash:input:119",
+      "inputToCommitMs": 0.922
+    },
+    {
+      "id": "typedash:input:120",
+      "inputToCommitMs": 1.159
+    },
+    {
+      "id": "typedash:input:121",
+      "inputToCommitMs": 1.576
+    },
+    {
+      "id": "typedash:input:122",
+      "inputToCommitMs": 0.968
+    },
+    {
+      "id": "typedash:input:123",
+      "inputToCommitMs": 1.072
+    },
+    {
+      "id": "typedash:input:124",
+      "inputToCommitMs": 1.722
+    },
+    {
+      "id": "typedash:input:125",
+      "inputToCommitMs": 2.031
+    },
+    {
+      "id": "typedash:input:126",
+      "inputToCommitMs": 1.309
+    },
+    {
+      "id": "typedash:input:127",
+      "inputToCommitMs": 0.985
+    },
+    {
+      "id": "typedash:input:128",
+      "inputToCommitMs": 0.928
+    },
+    {
+      "id": "typedash:input:129",
+      "inputToCommitMs": 1.07
+    },
+    {
+      "id": "typedash:input:130",
+      "inputToCommitMs": 0.981
+    },
+    {
+      "id": "typedash:input:131",
+      "inputToCommitMs": 1.168
+    },
+    {
+      "id": "typedash:input:132",
+      "inputToCommitMs": 1.074
+    },
+    {
+      "id": "typedash:input:133",
+      "inputToCommitMs": 1.117
+    },
+    {
+      "id": "typedash:input:134",
+      "inputToCommitMs": 1.22
+    },
+    {
+      "id": "typedash:input:135",
+      "inputToCommitMs": 0.96
+    },
+    {
+      "id": "typedash:input:136",
+      "inputToCommitMs": 0.989
+    },
+    {
+      "id": "typedash:input:137",
+      "inputToCommitMs": 1.07
+    },
+    {
+      "id": "typedash:input:138",
+      "inputToCommitMs": 1.503
+    },
+    {
+      "id": "typedash:input:139",
+      "inputToCommitMs": 0.91
+    },
+    {
+      "id": "typedash:input:140",
+      "inputToCommitMs": 0.822
+    },
+    {
+      "id": "typedash:input:141",
+      "inputToCommitMs": 1.012
+    },
+    {
+      "id": "typedash:input:142",
+      "inputToCommitMs": 0.922
+    },
+    {
+      "id": "typedash:input:143",
+      "inputToCommitMs": 1.28
+    },
+    {
+      "id": "typedash:input:144",
+      "inputToCommitMs": 1.389
+    },
+    {
+      "id": "typedash:input:145",
+      "inputToCommitMs": 0.895
+    },
+    {
+      "id": "typedash:input:146",
+      "inputToCommitMs": 0.861
+    },
+    {
+      "id": "typedash:input:147",
+      "inputToCommitMs": 0.879
+    },
+    {
+      "id": "typedash:input:148",
+      "inputToCommitMs": 1.19
+    },
+    {
+      "id": "typedash:input:149",
+      "inputToCommitMs": 1.44
+    },
+    {
+      "id": "typedash:input:150",
+      "inputToCommitMs": 0.963
+    },
+    {
+      "id": "typedash:input:151",
+      "inputToCommitMs": 1.273
+    },
+    {
+      "id": "typedash:input:152",
+      "inputToCommitMs": 0.728
+    },
+    {
+      "id": "typedash:input:153",
+      "inputToCommitMs": 0.82
+    },
+    {
+      "id": "typedash:input:154",
+      "inputToCommitMs": 0.924
+    },
+    {
+      "id": "typedash:input:155",
+      "inputToCommitMs": 0.985
+    },
+    {
+      "id": "typedash:input:156",
+      "inputToCommitMs": 0.888
+    },
+    {
+      "id": "typedash:input:157",
+      "inputToCommitMs": 1.107
+    },
+    {
+      "id": "typedash:input:158",
+      "inputToCommitMs": 1.015
+    },
+    {
+      "id": "typedash:input:159",
+      "inputToCommitMs": 1.055
+    },
+    {
+      "id": "typedash:input:160",
+      "inputToCommitMs": 1.753
+    }
+  ]
+}

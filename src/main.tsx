@@ -1,6 +1,5 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import '@fontsource/roboto-mono/latin-400.css'
 import { App } from './app/App'
 import './styles/global.css'
 

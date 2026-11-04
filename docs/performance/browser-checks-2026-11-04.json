@@ -1,0 +1,70 @@
+{
+  "functional": {
+    "stats": {
+      "startTime": "2026-11-04T02:35:21.760Z",
+      "duration": 29043.71,
+      "expected": 57,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "projects": {
+      "chromium": {
+        "passed": 19,
+        "failed": 0,
+        "skipped": 0
+      },
+      "firefox": {
+        "passed": 19,
+        "failed": 0,
+        "skipped": 0
+      },
+      "webkit": {
+        "passed": 19,
+        "failed": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "performanceSuite": {
+    "stats": {
+      "startTime": "2026-11-04T02:45:31.664Z",
+      "duration": 46205.897,
+      "expected": 2,
+      "skipped": 0,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "latestInteractionStats": {
+      "startTime": "2026-11-04T02:48:50.254Z",
+      "duration": 26980.936999999998,
+      "expected": 0,
+      "skipped": 0,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "openGate": "Keyboard next-paint p95 upper bound 52 ms exceeds the 32 ms target."
+  },
+  "browsers": [
+    {
+      "name": "chromium",
+      "revision": "1248",
+      "version": "156.0.8078.4"
+    },
+    {
+      "name": "firefox",
+      "revision": "1555",
+      "version": "157.0"
+    },
+    {
+      "name": "webkit",
+      "revision": "2370",
+      "version": "27.2"
+    }
+  ],
+  "build": {
+    "entry": "assets/index-CqOAcCyc.js",
+    "sha256": "a16e07c19bf1f98f72e9cb30b4fb73462aaae0aaf2e6f82445599e2611f48c3c"
+  },
+  "scope": "Local production preview. No deployment or actual-phone certification."
+}

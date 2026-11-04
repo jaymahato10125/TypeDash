@@ -47,7 +47,7 @@ export default function SpeedChart({ samples }: { samples: readonly TimelineSamp
         <line x1={x(current.elapsedMs)} x2={x(current.elapsedMs)} y1={top} y2={bottom} className={styles.inspectionLine} />
         <circle cx={x(current.elapsedMs)} cy={y(current.wpm)} r="3.5" className={styles.inspectionPoint} />
       </svg>
-      <label className={styles.rangeLabel}>Inspect time <input type="range" min="0" max={samples.length - 1} step="1" value={index} aria-label="Inspect speed chart time" aria-valuetext={`${(current.elapsedMs / 1000).toFixed(1)} seconds, ${current.wpm.toFixed(1)} WPM, ${current.intervalRawWpm.toFixed(1)} raw, ${current.errors} errors`} onChange={event => setSelected(Number(event.target.value))} /></label>
+      <label className={styles.rangeLabel}>Inspect time <input tabIndex={0} type="range" min="0" max={samples.length - 1} step="1" value={index} aria-label="Inspect speed chart time" aria-valuetext={`${(current.elapsedMs / 1000).toFixed(1)} seconds, ${current.wpm.toFixed(1)} WPM, ${current.intervalRawWpm.toFixed(1)} raw, ${current.errors} errors`} onChange={event => setSelected(Number(event.target.value))} /></label>
       <div className={styles.readout} data-testid="chart-readout"><span>{(current.elapsedMs / 1000).toFixed(1)}s</span><span>WPM <strong>{current.wpm.toFixed(1)}</strong></span><span>raw <strong>{current.intervalRawWpm.toFixed(1)}</strong> <small>over {interval.toFixed(1)}s</small></span><span>errors <strong>{current.errors}</strong></span></div>
     </div>
   )
